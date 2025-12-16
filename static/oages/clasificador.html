@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestión de Estudiantes - InclusIA</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- Tailwind + DaisyUI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2f5bcc',
+            primaryLight: '#40b1cc'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      padding-top: 110px;
+      background: radial-gradient(circle at top left, #e6f4ff 0, #ffffff 45%, #f3f7ff 100%);
+      color: #475569;
+    }
+
+    main.container {
+      max-width: 1200px;
+    }
+
+    /* NAVBAR MEJORADA */
+    .navbar {
+      min-height: 96px;
+      padding-top: 14px;
+      padding-bottom: 14px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(10px);
+      background-color: #ffffff !important;
+    }
+
+    .navbar-brand img {
+      height: 64px;
+      width: auto;
+    }
+
+    .navbar-nav .nav-link {
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #0f172a !important;
+      padding-inline: 0.75rem;
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+      color: #2f5bcc !important;
+    }
+
+    .navbar-nav .btn-primary {
+      padding: 0.6rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: linear-gradient(135deg, #2f5bcc, #40b1cc);
+      border: none;
+      box-shadow: 0 10px 25px rgba(64, 177, 204, 0.45);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .navbar-nav .btn-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(64, 177, 204, 0.55);
+    }
+
+    .nav-item {
+      margin-left: 1.5rem;
+    }
+
+    /* Cards estudiantes */
+    .student-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .student-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .pill-status {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.6rem;
+      border-radius: 9999px;
+    }
+
+    .chip {
+      font-size: 0.78rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(64, 177, 204, 0.09);
+      color: #0f172a;
+    }
+
+    .tabs.tab-bordered .tab {
+      font-size: 0.85rem;
+      text-transform: none;
+    }
+
+    .soft-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #40b1cc #e5e7eb;
+    }
+
+    .soft-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+
+    .soft-scroll::-webkit-scrollbar-thumb {
+      background: #40b1cc;
+      border-radius: 999px;
+    }
+
+    .soft-scroll::-webkit-scrollbar-track {
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 991.98px) {
+      .nav-item {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar navbar-expand-xl navbar-light fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <img src="assets/img/logo/LogoTrue-removebg-preview.png" alt="logo">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-xl-0 align-items-xl-center gap-xl-2">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html#inicio">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="index.html#clasificador">Clasificador</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="index.html#contacto-pie">Contacto PIE</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+              Ingreso de cursos
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Enseñanza Básica</a></li>
+              <li><a class="dropdown-item" href="#">Enseñanza Media</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item fw-semibold text-primary" href="estudiantes.html">Gestión de estudiantes</a></li>
+            </ul>
+          </li>
+          <li class="nav-item ms-xl-3">
+            <a class="btn btn-primary rounded-pill px-4" href="[URL_DE_INICIO_DE_SESIÓN]">
+              Inicio de Sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="container py-4">
+
+    <!-- Encabezado / Filtros -->
+    <section class="mb-4">
+      <div class="bg-white shadow-sm rounded-3 px-4 py-3 d-flex flex-column flex-lg-row 
+                  align-items-lg-center justify-content-between gap-3">
+        <div>
+          <h1 class="h4 mb-1 fw-bold text-slate-800">
+            Gestión de estudiantes
+          </h1>
+          <p class="mb-0 small text-slate-500">
+            Marca asistencia, revisa información integral, documentos y gestiona el apoyo PIE en un solo lugar.
+          </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <select id="select-curso" class="form-select form-select-sm shadow-sm" style="min-width: 180px;">
+            <option value="1A">Curso: 1° Básico A</option>
+            <option value="1B">1° Básico B</option>
+            <option value="2A">2° Básico A</option>
+          </select>
+
+          <select id="select-asignatura" class="form-select form-select-sm shadow-sm" style="min-width: 160px;">
+            <option value="todas">Asignatura: Todas</option>
+            <option value="lenguaje">Lenguaje</option>
+            <option value="matematica">Matemática</option>
+            <option value="ciencias">Ciencias</option>
+          </select>
+
+          <input id="filtro-fecha" type="date" class="form-control form-control-sm shadow-sm" />
+        </div>
+      </div>
+
+      <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+        <div class="input-group input-group-sm shadow-sm" style="max-width: 260px;">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="fas fa-search text-slate-400"></i>
+          </span>
+          <input id="buscador" type="text" class="form-control border-start-0" placeholder="Buscar estudiante..." />
+        </div>
+
+        <button id="btn-exportar" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2 shadow-sm">
+          <i class="fas fa-file-export"></i>
+          Exportar asistencia
+        </button>
+      </div>
+    </section>
+
+    <!-- LISTADO / GRID DE ESTUDIANTES -->
+    <section class="mb-5">
+      <div id="lista-estudiantes" class="row g-3"></div>
+    </section>
+  </main>
+
+  <!-- MODAL INFORMACIÓN INTEGRAL DEL ESTUDIANTE -->
+  <div class="modal fade" id="modalEstudiante" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-xl rounded-3">
+
+        <!-- Header -->
+        <div class="modal-header border-0 pb-0">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width:46px;height:46px;">
+              <span class="fw-semibold" id="modalIniciales">AG</span>
+            </div>
+            <div>
+              <h5 class="modal-title fw-bold text-slate-800" id="modalNombre">Ana González</h5>
+              <p class="mb-0 small text-slate-500" id="modalCurso">1° Básico A · NEE · PIE</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="modal-body pt-2">
+          <div role="tablist" class="tabs tabs-lifted tab-bordered soft-scroll overflow-x-auto mb-3">
+            <a role="tab" class="tab tab-active" id="tab-general" onclick="mostrarSeccion('general')">
+              Info general
+            </a>
+            <a role="tab" class="tab" id="tab-planificacion" onclick="mostrarSeccion('planificacion')">
+              Planificación / Estrategia
+            </a>
+            <a role="tab" class="tab" id="tab-pie" onclick="mostrarSeccion('pie')">
+              Contacto PIE
+            </a>
+            <a role="tab" class="tab" id="tab-intervencion" onclick="mostrarSeccion('intervencion')">
+              Plan de intervención individual
+            </a>
+            <a role="tab" class="tab" id="tab-calificaciones" onclick="mostrarSeccion('calificaciones')">
+              Calificaciones
+            </a>
+            <a role="tab" class="tab" id="tab-documentos" onclick="mostrarSeccion('documentos')">
+              Documentación / Archivos
+            </a>
+            <a role="tab" class="tab" id="tab-emocional" onclick="mostrarSeccion('emocional')">
+              Eval. emocional
+            </a>
+          </div>
+
+          <!-- Info general -->
+          <div id="seccion-general">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Datos generales</h6>
+                    <dl class="row mb-0 small">
+                      <dt class="col-5 text-slate-500">RUT</dt>
+                      <dd class="col-7" id="modalRut">22.222.222-2</dd>
+
+                      <dt class="col-5 text-slate-500">Fecha de nacimiento</dt>
+                      <dd class="col-7">12/08/2015</dd>
+
+                      <dt class="col-5 text-slate-500">Edad</dt>
+                      <dd class="col-7">9 años</dd>
+
+                      <dt class="col-5 text-slate-500">Diagnóstico NEE</dt>
+                      <dd class="col-7">TEA · Trastorno específico del lenguaje</dd>
+
+                      <dt class="col-5 text-slate-500">Responsable principal</dt>
+                      <dd class="col-7">María González (Madre)</dd>
+
+                      <dt class="col-5 text-slate-500">Teléfono contacto</dt>
+                      <dd class="col-7">+56 9 5555 5555</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Resumen pedagógico / PIE</h6>
+                    <ul class="small text-slate-600 mb-0">
+                      <li>Presenta avances significativos en comprensión lectora con apoyo visual.</li>
+                      <li>Responde mejor a instrucciones cortas, concretas y acompañadas de pictogramas.</li>
+                      <li>Asiste 95% de las clases, con buena disposición en rutinas estructuradas.</li>
+                      <li>Se recomienda mantener anticipación de cambios y apoyos visuales en evaluaciones.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Planificación / Estrategia -->
+          <div id="seccion-planificacion" class="d-none">
+            <div class="card border-0 shadow-sm rounded-3 mb-3">
+              <div class="card-body">
+                <h6 class="fw-semibold mb-2">Planificación y estrategias de trabajo</h6>
+                <p class="small mb-2 text-slate-600">
+                  Resume las adaptaciones de acceso, curriculares y metodológicas acordadas para el estudiante.
+                </p>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label text-xs text-slate-500 mb-1">Objetivos priorizados</label>
+                    <textarea class="form-control form-control-sm" rows="4"
+                      placeholder="Ej: Comprender instrucciones simples de 2 pasos, identificar palabras clave en textos breves, resolver sumas y restas hasta el 20 con apoyo manipulativo."></textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label text-xs text-slate-500 mb-1">Estrategias y apoyos</label>
+                    <textarea class="form-control form-control-sm" rows="4"
+                      placeholder="Ej: Uso de pictogramas, reforzamiento positivo inmediato, trabajo en parejas tutor–tutorado, segmentación de tareas largas en pasos cortos."></textarea>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-save me-1"></i> Guardar planificación
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacto PIE -->
+          <div id="seccion-pie" class="d-none">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Profesionales PIE asociados</h6>
+                    <ul class="list-group list-group-flush small">
+                      <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                          <div class="fw-semibold text-slate-800">Psicopedagoga: Carolina Pérez</div>
+                          <div class="text-slate-500">carolina.perez@colegio.cl · +56 9 4444 4444</div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm ms-2">
+                          <i class="fas fa-phone-alt"></i>
+                        </button>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                        <div>
+                          <div class="fw-semibold text-slate-800">Fonoaudióloga: Daniela Soto</div>
+                          <div class="text-slate-500">daniela.soto@colegio.cl</div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm ms-2">
+                          <i class="fas fa-envelope"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Comunicación rápida</h6>
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-phone-alt me-1"></i>
+                        Llamar contacto PIE del estudiante
+                      </button>
+                      <button class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-comment-medical me-1"></i>
+                        Enviar mensaje al equipo PIE
+                      </button>
+                      <button class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        Activar botón de emergencia
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan de intervención individual -->
+          <div id="seccion-intervencion" class="d-none">
+            <div class="card border-0 shadow-sm rounded-3">
+              <div class="card-body">
+                <h6 class="fw-semibold mb-2">Plan de intervención individual (PII)</h6>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label text-xs text-slate-500 mb-1">Meta a corto plazo (1–3 meses)</label>
+                    <textarea class="form-control form-control-sm" rows="4"></textarea>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label text-xs text-slate-500 mb-1">Meta a mediano plazo (3–6 meses)</label>
+                    <textarea class="form-control form-control-sm" rows="4"></textarea>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label text-xs text-slate-500 mb-1">Evaluación / Criterios de logro</label>
+                    <textarea class="form-control form-control-sm" rows="4"></textarea>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-save me-1"></i> Guardar PII
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calificaciones -->
+          <div id="seccion-calificaciones" class="d-none">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-3">Filtros de calificaciones</h6>
+
+                    <div class="mb-2">
+                      <label class="form-label text-xs text-slate-500 mb-1">Asignatura</label>
+                      <select class="form-select form-select-sm">
+                        <option>Lenguaje</option>
+                        <option>Matemática</option>
+                        <option>Ciencias</option>
+                      </select>
+                    </div>
+
+                    <div class="mb-2">
+                      <label class="form-label text-xs text-slate-500 mb-1">Semestre</label>
+                      <select class="form-select form-select-sm">
+                        <option>1° Semestre</option>
+                        <option>2° Semestre</option>
+                        <option>Año completo</option>
+                      </select>
+                    </div>
+
+                    <hr>
+
+                    <p class="small mb-1">
+                      <span class="fw-semibold text-slate-700">Promedio general:</span>
+                      <span class="badge bg-primary ms-1">6,1</span>
+                    </p>
+                    <p class="small mb-1">
+                      <span class="fw-semibold text-slate-700">Promedio Lenguaje:</span>
+                      <span class="badge bg-primaryLight ms-1">6,4</span>
+                    </p>
+                    <p class="small mb-0">
+                      <span class="fw-semibold text-slate-700">Promedio Matemática:</span>
+                      <span class="badge bg-primaryLight ms-1">5,9</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-8">
+                <div class="card border-0 shadow-sm rounded-3 mb-3">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Notas por evaluación</h6>
+                    <div class="table-responsive soft-scroll">
+                      <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Asignatura</th>
+                            <th>Evaluación</th>
+                            <th>Fecha</th>
+                            <th>Nota</th>
+                            <th>Tipo</th>
+                          </tr>
+                        </thead>
+                        <tbody class="small">
+                          <tr>
+                            <td>Lenguaje</td>
+                            <td>Prueba lectura 1</td>
+                            <td>15/03/2025</td>
+                            <td><span class="badge bg-success">6,5</span></td>
+                            <td>Sumativa</td>
+                          </tr>
+                          <tr>
+                            <td>Matemática</td>
+                            <td>Guía sumas</td>
+                            <td>20/03/2025</td>
+                            <td><span class="badge bg-success">6,0</span></td>
+                            <td>Formativa</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-3">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Anotaciones positivas y negativas</h6>
+                    <div class="d-flex flex-column gap-2 small">
+                      <div class="alert alert-success py-1 mb-0">
+                        05/04/2025 · Participa activamente en lectura grupal y apoya a sus compañeros.
+                      </div>
+                      <div class="alert alert-warning py-1 mb-0">
+                        28/03/2025 · Presenta dificultad para mantener la atención en actividades largas, requiere más pausas activas.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Documentación / Archivos -->
+          <div id="seccion-documentos" class="d-none">
+            <div class="row g-3">
+              <div class="col-md-5">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-3">Subir documentos</h6>
+                    <div class="mb-2">
+                      <label class="form-label text-xs text-slate-500 mb-1">Tipo de documento</label>
+                      <select class="form-select form-select-sm">
+                        <option>Informe diagnóstico</option>
+                        <option>Autorización apoderado</option>
+                        <option>PII firmado</option>
+                        <option>Otro</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label text-xs text-slate-500 mb-1">Archivo</label>
+                      <input type="file" class="form-control form-control-sm">
+                    </div>
+                    <button class="btn btn-primary btn-sm">
+                      <i class="fas fa-upload me-1"></i> Subir documento
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-7">
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+                  <div class="card-body">
+                    <h6 class="fw-semibold mb-2">Documentos del estudiante</h6>
+                    <div class="table-responsive soft-scroll">
+                      <table class="table table-sm align-middle mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody class="small">
+                          <tr>
+                            <td>Informe_diagnóstico_2024.pdf</td>
+                            <td>Diagnóstico</td>
+                            <td>01/03/2024</td>
+                            <td class="text-end">
+                              <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-download"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>PII_2025_S1.pdf</td>
+                            <td>PII</td>
+                            <td>05/03/2025</td>
+                            <td class="text-end">
+                              <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-download"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evaluación emocional -->
+          <div id="seccion-emocional" class="d-none">
+            <div class="card border-0 shadow-sm rounded-3">
+              <div class="card-body">
+                <h6 class="fw-semibold mb-3">Formulario de evaluación emocional</h6>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label text-xs text-slate-500 mb-1">Estado de ánimo predominante</label>
+                    <select class="form-select form-select-sm">
+                      <option>Estable</option>
+                      <option>Ansioso/a</option>
+                      <option>Triste / desmotivado/a</option>
+                      <option>Irritable</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label text-xs text-slate-500 mb-1">Regulación emocional</label>
+                    <select class="form-select form-select-sm">
+                      <option>Se autorregula con apoyo mínimo</option>
+                      <option>Requiere apoyo frecuente</option>
+                      <option>Requiere contención constante</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label text-xs text-slate-500 mb-1">Interacción social</label>
+                    <select class="form-select form-select-sm">
+                      <option>Se relaciona bien con pares</option>
+                      <option>Prefiere trabajo individual</option>
+                      <option>Evita interacción</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <label class="form-label text-xs text-slate-500 mb-1">Observaciones cualitativas</label>
+                  <textarea class="form-control form-control-sm" rows="4"
+                    placeholder="Describe situaciones relevantes, desencadenantes, estrategias de contención que funcionaron y coordinación con familia/PIE."></textarea>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                  <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-save me-1"></i> Guardar evaluación emocional
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- /modal-body -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
+    /* --------- Datos de ejemplo (MÁS ESTUDIANTES) --------- */
+    const estudiantes = [
+      {
+        id: 1,
+        nombre: 'Ana González',
+        iniciales: 'AG',
+        curso: '1A',
+        cursoTexto: '1° Básico A',
+        nee: true,
+        estado: 'Activo',
+        rut: '22.222.222-2',
+        promedioGeneral: 6.1,
+        promedios: {
+          lenguaje: 6.4,
+          matematica: 5.9,
+          ciencias: 6.0
+        },
+        pie: 'PIE activo',
+        asistencia: {}
+      },
+      {
+        id: 2,
+        nombre: 'Bruno López',
+        iniciales: 'BL',
+        curso: '1A',
+        cursoTexto: '1° Básico A',
+        nee: false,
+        estado: 'Activo',
+        rut: '11.111.111-1',
+        promedioGeneral: 5.7,
+        promedios: {
+          lenguaje: 5.8,
+          matematica: 5.5,
+          ciencias: 5.9
+        },
+        pie: 'Sin PIE',
+        asistencia: {}
+      },
+      {
+        id: 3,
+        nombre: 'Carla Muñoz',
+        iniciales: 'CM',
+        curso: '1B',
+        cursoTexto: '1° Básico B',
+        nee: true,
+        estado: 'Activo',
+        rut: '18.345.678-9',
+        promedioGeneral: 5.9,
+        promedios: {
+          lenguaje: 6.2,
+          matematica: 5.6,
+          ciencias: 6.0
+        },
+        pie: 'PIE activo',
+        asistencia: {}
+      },
+      {
+        id: 4,
+        nombre: 'Diego Herrera',
+        iniciales: 'DH',
+        curso: '1B',
+        cursoTexto: '1° Básico B',
+        nee: false,
+        estado: 'Activo',
+        rut: '17.222.333-4',
+        promedioGeneral: 5.4,
+        promedios: {
+          lenguaje: 5.3,
+          matematica: 5.5,
+          ciencias: 5.4
+        },
+        pie: 'Sin PIE',
+        asistencia: {}
+      },
+      {
+        id: 5,
+        nombre: 'Elena Rojas',
+        iniciales: 'ER',
+        curso: '2A',
+        cursoTexto: '2° Básico A',
+        nee: true,
+        estado: 'Activo',
+        rut: '19.876.543-2',
+        promedioGeneral: 6.3,
+        promedios: {
+          lenguaje: 6.5,
+          matematica: 6.1,
+          ciencias: 6.2
+        },
+        pie: 'PIE activo',
+        asistencia: {}
+      },
+      {
+        id: 6,
+        nombre: 'Felipe Castro',
+        iniciales: 'FC',
+        curso: '2A',
+        cursoTexto: '2° Básico A',
+        nee: false,
+        estado: 'Activo',
+        rut: '20.111.222-5',
+        promedioGeneral: 5.8,
+        promedios: {
+          lenguaje: 5.9,
+          matematica: 5.7,
+          ciencias: 5.8
+        },
+        pie: 'Sin PIE',
+        asistencia: {}
+      }
+    ];
+
+    const listaEstudiantesEl = document.getElementById('lista-estudiantes');
+    const buscadorEl = document.getElementById('buscador');
+    const selectCursoEl = document.getElementById('select-curso');
+    const selectAsignaturaEl = document.getElementById('select-asignatura');
+    const fechaEl = document.getElementById('filtro-fecha');
+    const btnExportar = document.getElementById('btn-exportar');
+
+    const hoy = new Date().toISOString().slice(0, 10);
+    if (fechaEl) fechaEl.value = hoy;
+
+    function filtrarEstudiantes() {
+      const texto = (buscadorEl.value || '').toLowerCase();
+      const curso = selectCursoEl.value;
+
+      return estudiantes.filter(e => {
+        const coincideNombre = e.nombre.toLowerCase().includes(texto);
+        const coincideCurso = curso ? e.curso === curso : true;
+        return coincideNombre && coincideCurso;
+      });
+    }
+
+    function renderEstudiantes() {
+      const asignatura = selectAsignaturaEl.value;
+      const fecha = fechaEl.value || hoy;
+      const datos = filtrarEstudiantes();
+
+      listaEstudiantesEl.innerHTML = '';
+
+      if (datos.length === 0) {
+        listaEstudiantesEl.innerHTML = `
+          <div class="col-12">
+            <div class="alert alert-light border d-flex align-items-center">
+              <i class="fas fa-info-circle me-2 text-muted"></i>
+              No se encontraron estudiantes para los filtros seleccionados.
+            </div>
+          </div>`;
+        return;
+      }
+
+      datos.forEach(e => {
+        const asistenciaHoy = e.asistencia[fecha] || 'asistente';
+        const promedioAsignatura =
+          asignatura === 'todas' ? null : e.promedios[asignatura];
+
+        const col = document.createElement('div');
+        col.className = 'col-12 col-md-6 col-lg-4';
+
+        col.innerHTML = `
+          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <div class="me-3">
+                  <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
+                       style="width:40px;height:40px;">
+                    <span class="fw-semibold">${e.iniciales}</span>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-0 text-slate-800 fw-semibold">${e.nombre}</h6>
+                  <small class="text-slate-500">${e.cursoTexto} ${e.nee ? '· NEE' : ''}</small>
+                </div>
+                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
+                  ${e.estado}
+                </span>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
+                <div class="btn-group btn-group-sm w-100" role="group">
+                  <input type="radio" class="btn-check" name="asistencia-${e.id}" id="asiste-${e.id}" autocomplete="off"
+                         ${asistenciaHoy === 'asistente' ? 'checked' : ''}>
+                  <label class="btn btn-outline-success" for="asiste-${e.id}">
+                    <i class="fas fa-check-circle me-1"></i> Asistente
+                  </label>
+
+                  <input type="radio" class="btn-check" name="asistencia-${e.id}" id="inasiste-${e.id}" autocomplete="off"
+                         ${asistenciaHoy === 'inasistente' ? 'checked' : ''}>
+                  <label class="btn btn-outline-danger" for="inasiste-${e.id}">
+                    <i class="fas fa-times-circle me-1"></i> Inasistente
+                  </label>
+                </div>
+              </div>
+
+              <div class="d-flex flex-wrap gap-1 mb-3">
+                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: ${e.promedioGeneral.toFixed(1)}</span>
+                ${
+                  promedioAsignatura !== null
+                    ? `<span class="chip"><i class="fas fa-book-open me-1"></i>${selectAsignaturaEl.options[selectAsignaturaEl.selectedIndex].textContent.replace('Asignatura: ','')}: ${promedioAsignatura.toFixed(1)}</span>`
+                    : ''
+                }
+                <span class="chip"><i class="fas fa-user-friends me-1"></i>${e.pie}</span>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <button
+                  class="btn btn-primary btn-sm d-flex align-items-center gap-1"
+                  onclick="abrirModalEstudiante(${e.id})"
+                >
+                  <i class="fas fa-info-circle"></i>
+                  Ver información
+                </button>
+
+                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                  <i class="fas fa-phone-alt"></i>
+                  Llamar contacto PIE
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const radioAsiste = col.querySelector(`#asiste-${e.id}`);
+        const radioInasiste = col.querySelector(`#inasiste-${e.id}`);
+
+        radioAsiste.addEventListener('change', () => {
+          if (radioAsiste.checked) e.asistencia[fecha] = 'asistente';
+        });
+        radioInasiste.addEventListener('change', () => {
+          if (radioInasiste.checked) e.asistencia[fecha] = 'inasistente';
+        });
+
+        listaEstudiantesEl.appendChild(col);
+      });
+    }
+
+    function abrirModalEstudiante(id) {
+      const e = estudiantes.find(x => x.id === id);
+      if (!e) return;
+
+      document.getElementById('modalNombre').innerText = e.nombre;
+      document.getElementById('modalCurso').innerText =
+        `${e.cursoTexto} ${e.nee ? '· NEE · PIE' : ''}`;
+      document.getElementById('modalRut').innerText = e.rut;
+      document.getElementById('modalIniciales').innerText = e.iniciales;
+
+      mostrarSeccion('general');
+
+      const modal = new bootstrap.Modal(document.getElementById('modalEstudiante'));
+      modal.show();
+    }
+
+    function exportarAsistencia() {
+      const fecha = fechaEl.value || hoy;
+      let csv = 'Estudiante,Curso,Fecha,Estado asistencia\n';
+      estudiantes.forEach(e => {
+        const estado = e.asistencia[fecha] || 'sin registro';
+        csv += `"${e.nombre}","${e.cursoTexto}","${fecha}","${estado}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `asistencia_${fecha}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function mostrarSeccion(nombre) {
+      const secciones = ['general', 'planificacion', 'pie', 'intervencion', 'calificaciones', 'documentos', 'emocional'];
+      secciones.forEach(s => {
+        document.getElementById('seccion-' + s).classList.toggle('d-none', s !== nombre);
+        document.getElementById('tab-' + s).classList.toggle('tab-active', s === nombre);
+      });
+    }
+
+    // Eventos de filtros
+    buscadorEl.addEventListener('input', renderEstudiantes);
+    selectCursoEl.addEventListener('change', renderEstudiantes);
+    selectAsignaturaEl.addEventListener('change', renderEstudiantes);
+    fechaEl.addEventListener('change', renderEstudiantes);
+    btnExportar.addEventListener('click', exportarAsistencia);
+
+    // Render inicial
+    renderEstudiantes();
+
+    // Exponer funciones
+    window.abrirModalEstudiante = abrirModalEstudiante;
+    window.mostrarSeccion = mostrarSeccion;
+  </script>
+  <script src="static/js/script2.js"></script>
+  <script src="static/js/script.js"></script>
+</body>
+</html>

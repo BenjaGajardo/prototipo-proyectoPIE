@@ -1,0 +1,116 @@
+/* Estilos para el contenedor principal del chat */
+.chat-container {
+    height: 70vh; /* Altura del contenedor de chat */
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Asegura que los bordes redondeados funcionen bien */
+}
+
+/* Lista de contactos */
+.contact-list {
+    border-right: 1px solid #dee2e6;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Elemento individual de contacto */
+.contact-item {
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+.contact-item:hover, .contact-item.active {
+    background-color: #e9ecef;
+}
+
+/* Ventana de chat (derecha) */
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Encabezado del chat activo */
+.chat-header {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+/* Cuerpo donde aparecen los mensajes */
+.chat-body {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f5f8fb; /* Fondo similar al que usas en tu diseño */
+}
+
+/* Área de entrada de texto */
+.chat-input {
+    padding: 15px;
+    border-top: 1px solid #dee2e6;
+    background-color: #ffffff;
+}
+
+/* Estilo general para un mensaje */
+.message {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+/* Mensaje enviado por el usuario */
+.message.sent {
+    justify-content: flex-end;
+}
+
+/* Mensaje recibido del docente */
+.message.received {
+    justify-content: flex-start;
+}
+
+/* Contenido de la burbuja del mensaje */
+.message-content {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+/* Estilo para el mensaje enviado (tu color principal) */
+.message.sent .message-content {
+    background-color: #40b1cc; 
+    color: white;
+    /* Ajuste de borde para efecto de burbuja */
+    border-bottom-right-radius: 2px;
+}
+
+/* Estilo para el mensaje recibido */
+.message.received .message-content {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #dee2e6;
+    /* Ajuste de borde para efecto de burbuja */
+    border-bottom-left-radius: 2px;
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+    .chat-container {
+        height: 80vh; 
+    }
+    .contact-list {
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        height: auto;
+        max-height: 200px; /* Limita la altura de la lista de contactos en móviles */
+    }
+    .chat-body {
+        padding: 10px;
+    }
+    .message-content {
+        max-width: 85%;
+    }
+}

@@ -1,0 +1,820 @@
+/* --- Globales y Resets (Si no los tienes, agrégalos) --- */
+body {
+    padding-top: 70px;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    /* Usando Poppins como ejemplo */
+    line-height: 1.6;
+    color: #555;
+    overflow-x: hidden;
+    /* Evita scroll horizontal no deseado */
+}
+
+/* Contenedor principal de ancho limitado */
+.container {
+    max-width: 1200px;
+    /* Ancho máximo para el contenido */
+    margin: 0 auto;
+    /* Centrar el contenedor */
+    padding: 0 15px;
+    /* Padding a los lados */
+}
+
+/* Flexbox utilities (basadas en las clases de tu código original) */
+.d-flex {
+    display: flex;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.col-lg-12 {
+    width: 100%;
+}
+
+/* Simplificación, en un framework real esto sería más complejo */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+/* Ajuste de filas */
+.col-lg-12,
+.col-md-6 {
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+/* Ajuste de columnas */
+.g-4 {
+    gap: 1.5rem;
+}
+
+/* Espaciado entre elementos en un grid */
+/* --- Estilos de la Barra de Navegación (lo que ya teníamos) --- */
+
+
+.header-2 {
+    width: 100%;
+    position: relative;
+    /* Puedes cambiar a fixed o sticky si lo deseas */
+    z-index: 99;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    /* Sombra sutil para el header */
+    outline: solid 2px black;
+}
+
+.sticky.header-2 {
+    /* Clase que se añade con JS al hacer scroll */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    animation: slideDown 0.5s ease-out;
+    /* Animación al volverse sticky */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.mega-menu-wrapper {
+    width: 100%;
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.sticky-logo img {
+    max-width: 120px;
+    height: auto;
+    margin-right: 40px;
+}
+
+.main-menu nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.main-menu nav ul li {
+    position: relative;
+    margin-right: 30px;
+}
+
+.main-menu nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    display: block;
+    padding: 15px 0;
+    transition: color 0.3s;
+}
+
+.main-menu nav ul li.active a {
+    color: #2f5bcc;
+}
+
+/* Color para el elemento activo */
+.main-menu nav ul li a:hover {
+    color: #6ce5e8;
+}
+
+/* Botones y submenús */
+.theme-btn {
+    display: inline-block;
+    padding: 15px 20px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: 600;
+}
+
+.bg-2 {
+    background-color: #2f5bcc;
+    /* Naranja principal */
+    color: white !important;
+    border-radius: 50px;
+    margin-left: 15px;
+    /* Espacio para el botón de Ingresar */
+}
+
+.bg-2:hover {
+    background-color: #40b1cc;
+}
+
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    list-style: none;
+    padding: 10px 0;
+    min-width: 250px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    border-radius: 5px;
+}
+
+.main-menu nav ul li:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 5px);
+    /* Pequeño desplazamiento */
+}
+
+.submenu li a {
+    padding: 10px 20px;
+    white-space: nowrap;
+    color: #333;
+    font-weight: 400;
+}
+
+.submenu li a:hover {
+    background-color: #f5f5f5;
+    color: #2f5bcc;
+}
+
+/* Iconos de la derecha */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.icon-items {
+    display: flex;
+    align-items: center;
+}
+
+.icon-items a {
+    text-decoration: none;
+}
+
+.icon-items .icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.icon-items .icon i.fa-whatsapp {
+    color: #25D366;
+}
+
+/* Color específico para WhatsApp */
+.icon-items .content h4 a {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    /* Color por defecto, si no se sobreescribe */
+}
+
+/* El color #f2f2f2 está en línea en tu HTML para el teléfono */
+/* Menú Hamburguesa (visible solo en móvil) */
+.header__hamburger {
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+}
+
+.d-xl-none {
+    display: none !important;
+}
+
+/* Oculta en pantallas extra-grandes */
+@media (max-width: 1199px) {
+
+    /* Ajustes para pantallas más pequeñas (breakpoint xl) */
+    .main-menu {
+        display: none;
+    }
+
+    .d-xl-none {
+        display: block !important;
+    }
+
+    /* Muestra elementos ocultos en xl */
+}
+
+/* --- Estilos para la SECCIÓN HERO --- */
+.hero-section {
+    position: relative;
+    background-color: #F8FCFE;
+    /* Color de fondo similar al original */
+    padding: 120px 0;
+    /* Espaciado superior e inferior */
+    overflow: hidden;
+    /* Importante para las formas que salen de la sección */
+    text-align: center;
+    /* Centrar el contenido por defecto */
+}
+
+.hero-section .container {
+    position: relative;
+    /* Para posicionar el contenido sobre las formas */
+    z-index: 10;
+}
+
+.hero-content {
+    margin-bottom: 50px;
+}
+
+.hero-content .sub-content {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e6f7ff;
+    /* Fondo claro para el badge */
+    color: #007bff;
+    /* Color de texto del badge */
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.hero-content .sub-content img {
+    margin-right: 10px;
+    animation: floaty 3s ease-in-out infinite alternate;
+    /* Animación para la manita */
+}
+
+.hero-content h1 {
+    font-size: 58px;
+    font-weight: 700;
+    color: #333;
+    line-height: 1.2;
+    margin-bottom: 30px;
+}
+
+.hero-content h1 span {
+    color: #2f5bcc;
+    /* Color naranja para la palabra "MEJOR VALORADA" */
+}
+
+
+.hero-button .theme-btn {
+    font-size: 18px;
+    padding: 15px 35px;
+    border-radius: 50px;
+    background-color: #2f5bcc;
+    /* Color azul para el botón principal */
+    color: white;
+}
+
+.hero-button .theme-btn:hover {
+    background-color: #40b1cc;
+}
+
+.hero-button .theme-btn i {
+    margin-left: 10px;
+}
+
+.dashboard-image {
+    margin-top: 50px;
+}
+
+.dashboard-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    animation: float-bob-x 8s ease-in-out infinite alternate;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* Sombra para la imagen principal */
+}
+
+/* --- Formas flotantes alrededor del Hero --- */
+.frame-shape,
+.man-shape,
+.girl-shape,
+.frame-shape-2 {
+    position: absolute;
+    opacity: 0.7;
+    /* Ligeramente transparentes */
+    z-index: 1;
+    /* Detrás del contenido principal */
+}
+
+.frame-shape img,
+.man-shape img,
+.girl-shape img,
+.frame-shape-2 img{
+    border-radius: 30px;
+}
+
+.frame-shape {
+    top: 5%;
+    left: 5%;
+    animation: float-bob-x 8s ease-in-out infinite alternate;
+    /* Animación X */
+}
+
+.man-shape {
+    bottom: 0%;
+    right: 5%;
+    animation: float-bob-y 10s ease-in-out infinite alternate;
+    /* Animación Y */
+}
+
+.girl-shape {
+    top: 10%;
+    right: 5%;
+    animation: float-bob-x 7s ease-in-out infinite alternate;
+    /* Animación X */
+}
+
+.frame-shape-2 {
+    bottom: 10%;
+    left: 0%;
+    animation: float-bob-y 9s ease-in-out infinite alternate;
+    /* Animación Y */
+}
+
+/* Animaciones flotantes */
+@keyframes float-bob-y {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes float-bob-x {
+    0% {
+        transform: translateX(0px);
+    }
+
+    50% {
+        transform: translateX(20px);
+    }
+
+    100% {
+        transform: translateX(0px);
+    }
+}
+
+@keyframes floaty {
+
+    /* Animación para la manita del badge */
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* --- Animaciones de entrada (WOW.js similar) --- */
+/* Para simular wow.js, podemos usar clases simples y animaciones CSS */
+.wow.fadeInUp {
+    animation-name: fadeInUp;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    opacity: 0;
+    /* Asegurarse de que esté oculto antes de la animación */
+}
+
+/* Retrasos de animación */
+.wow.fadeInUp[data-wow-delay=".2s"] {
+    animation-delay: 0.2s;
+}
+
+.wow.fadeInUp[data-wow-delay=".3s"] {
+    animation-delay: 0.3s;
+}
+
+.wow.fadeInUp[data-wow-delay=".4s"] {
+    animation-delay: 0.4s;
+}
+
+.wow.fadeInUp[data-wow-delay=".5s"] {
+    animation-delay: 0.5s;
+}
+
+.wow.fadeInUp[data-wow-delay=".6s"] {
+    animation-delay: 0.6s;
+}
+
+.wow.fadeInUp[data-wow-delay=".7s"] {
+    animation-delay: 0.7s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 50px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* --- Responsive (Ajustes para móviles) --- */
+@media (max-width: 767px) {
+
+    /* Móviles pequeños */
+    .hero-content h1 {
+        font-size: 38px;
+        /* Texto más pequeño en móviles */
+    }
+
+    .hero-section {
+        padding: 80px 0;
+    }
+
+    .frame-shape,
+    .man-shape,
+    .girl-shape,
+    .frame-shape-2 {
+        display: none;
+        /* Ocultar formas flotantes en móviles para simplificar */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+    /* Tablets */
+    .hero-content h1 {
+        font-size: 48px;
+    }
+
+    .frame-shape,
+    .man-shape,
+    .girl-shape,
+    .frame-shape-2 {
+        opacity: 0.5;
+        /* Menos opacas en tablets */
+    }
+}
+
+/* --- Estilos para las Secciones About/Contenido --- */
+.section-padding {
+    padding-top: 120px;
+    padding-bottom: 120px;
+}
+
+.pt-10 {
+    padding-top: 100px;
+}
+
+.about-wrapper.style-2 {
+    position: relative;
+}
+
+/* Títulos y Subtítulos de la sección */
+.about-content .section-title h2 {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #333;
+    margin-top: 10px;
+}
+
+.about-content p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Estilos de los Icon Items (Puntos con descripción) */
+.about-content .icon-items {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.about-content .icon-items .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #40b1cc;
+    /* Color naranja */
+    border-radius: 50%;
+    flex-shrink: 0;
+    /* Evita que el punto se encoja */
+    margin-top: 8px
+    /* Alineación con el inicio del texto */
+}
+
+.about-content .icon-items .content h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.about-content .icon-items .content p {
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* --- Estilos de las Imágenes de Acerca de --- */
+/* Contenedor principal de las dos imágenes */
+.about-image-items-2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    align-items: stretch;
+}
+
+@media (max-width: 768px) {
+    .about-image-items-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 991px) {
+    .about-image-items-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+
+/* Imagen grande/normal */
+.about-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.about-img {
+    width: 100%;
+    height: 320px;   /* AJUSTA AQUÍ */
+    overflow: hidden;
+    border-radius: 30px;
+}
+
+.about-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+/* Imagen grande/normal */
+/*
+.section-title img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+
+.about-image-items-3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-title2 {
+    display: flex;
+    max-width: 100%;
+    justify-content: space-between; 
+    gap: 30px;                      
+    padding: 0 40px;               
+*/
+
+.section-title2 {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 0 15px;          /* igual al container */
+    box-sizing: border-box;   /* CLAVE */
+    max-width: 100%;
+}
+
+.section-title2 > .about-image {
+    flex: 1 1 0;
+    max-width: 50%;
+}
+
+.section-title2 img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 40px;
+}
+
+.section-title2 {
+    overflow: hidden;
+}
+
+
+.about-img {
+    aspect-ratio: 16 / 9;
+    height: auto;
+}
+
+
+/* Imagen secundaria (con redondez especial en el original) 
+.about-image-2 {
+    margin-top: -50px;
+}
+*/
+.about-image-2 img {
+    max-width: 100%;
+    height: auto;
+    /* border-radius: 10px; (Ya está en el estilo en línea del HTML) */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive (Ajustes para móviles) */
+@media (max-width: 991px) {
+
+    /* Tablets y móviles */
+    .section-padding {
+        padding: 60px 0;
+    }
+
+    .about-content .section-title h2 {
+        font-size: 30px;
+    }
+
+    .about-image-items-2 {
+        margin-top: 30px;
+        /* Espacio para que las imágenes no choquen con el texto */
+    }
+
+    .about-image-2 {
+        margin-top: 0;
+        /* Eliminar el desplazamiento vertical en móvil */
+    }
+
+    /* Asegurar que el contenido y la imagen se apilen correctamente */
+    .row.g-4.align-items-center>div {
+        margin-bottom: 30px;
+    }
+
+    /* Invertir el orden de las columnas en la segunda sección para móvil */
+    .about-section.fix:nth-child(3) .row>.col-lg-6:first-child {
+        order: 2;
+    }
+
+    .about-section.fix:nth-child(3) .row>.col-lg-6:last-child {
+        order: 1;
+    }
+}
+
+.navbar {
+    padding: 5px 0;
+    
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #333 !important;
+}
+
+.nav-link:hover {
+    color: #2f5bcc !important;
+}
+
+.btn-primary {
+    background-color: #2f5bcc;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #40b1cc;
+}
+
+
+@media (max-width: 768px) {
+
+    h1, h2 {
+        font-size: 1.4rem;
+        line-height: 1.3;
+    }
+
+    .hero-section {
+        padding-top: 20px;
+        padding-bottom: 30px;
+    }
+
+    .hero-section img {
+        max-width: 70%;
+        height: auto;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+
+/* Header más bajo */
+.navbar {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    min-height: 100px;
+}
+
+.navbar-brand img {
+    height: 90px;
+    width: auto;
+}
+
+.navbar-toggler {
+    padding: 4px 6px;
+    font-size: 14px;
+}
+
+.nav-item {
+    margin-left: 10vh;
+}
+
+.navbar-nav .btn {
+    white-space: nowrap;
+}
