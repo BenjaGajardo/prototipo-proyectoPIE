@@ -21,6 +21,7 @@
 </head>
 
 <body>
+    <!-- Navar -->
     <header class="navbar navbar-expand-xl navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
 
@@ -62,13 +63,6 @@
                         </ul>
                     </li>
 
-                    <!-- Botón login -->
-                    <li class="nav-item ms-xl-3">
-                        <a class="btn btn-primary rounded-pill px-4" href="[URL_DE_INICIO_DE_SESIÓN]">
-                            Inicio de Sesión
-                        </a>
-                    </li>
-
                 </ul>
             </div>
         </div>
@@ -92,9 +86,6 @@
                             </span>
                             <h1 class="wow fadeInUp" data-wow-delay=".4s"> REGISTRATE<span style="color:#40b1cc"> EN
                                     NUESTRA WEB</span> <br />PARA COMENZAR. 💙🚀 </h1>
-                            <div class="hero-button wow fadeInUp" data-wow-delay=".6s"> <a class="theme-btn" href="">
-                                    Registrarse<i class="far fa-arrow"></i> </a> </div>
-                        </div>
                         <div class="dashboard-image wow fadeInUp" data-wow-delay=".7s"> <img
                                 src="assets/img/hero/docente.png" alt="img" style="border-radius:20px" /> </div>
                     </div>
@@ -236,20 +227,20 @@
 <div id="chat-container">
     <!-- Header -->
     <div class="chat-header">
-        <div>
-            <h4>Asistente InclusIA</h4>
-            <small>Estamos aquí para ayudarte</small>
-        </div>
-        <button class="close-btn" onclick="toggleChat()">✕</button>
+      <div>
+        <h4>Atlas</h4>
+        <small>Estamos aquí para ayudarte</small>
+      </div>
+      <button class="close-btn" onclick="toggleChat()">✕</button>
     </div>
-    
+
     <!-- Mensajes -->
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot">
-            <div class="message-content">
-                ¡Hola! 👋 Soy el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
-            </div>
+      <div class="message bot">
+        <div class="message-content">
+          ¡Hola! 👋 Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
         </div>
+      </div>
     </div>
     
     <!-- Indicador de escritura -->
@@ -283,6 +274,29 @@
     <script src="static/js/script.js"></script>
     <script src="static/js/script2.js"></script>
     <script src="static/js/chatbot.js"></script>
+
+    <script>
+    // Evitar volver al login con el botón atrás
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function() {
+        window.history.pushState(null, "", window.location.href);
+    };
+
+    // Verificar si hay sesión activa
+    const sesion = localStorage.getItem("sesion");
+    if (!sesion) {
+        // Si no hay sesión, redirigir al login
+        window.location.replace("login.html");
+    } else {
+        const datos = JSON.parse(sesion);
+        const tiempoTranscurrido = new Date().getTime() - datos.timestamp;
+        // Si la sesión expiró (más de 24 horas), redirigir al login
+        if (tiempoTranscurrido >= 24 * 60 * 60 * 1000) {
+            localStorage.removeItem("sesion");
+            window.location.replace("login.html");
+        }
+    }
+</script>
 </body>
 
 </html>

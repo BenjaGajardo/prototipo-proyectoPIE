@@ -15,8 +15,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="static/css/style_clasi.css">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/style_clasi.css">
+  <link rel="stylesheet" href="static/css/style_pie.css">
+
+  <link rel="preload" as="image" href="assets/img/logo/logo_pie.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
   <!-- Tailwind + DaisyUI -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Define colores personalizados -->
   <script>
     tailwind.config = {
       theme: {
@@ -28,8 +38,10 @@
         }
       }
     }
+
   </script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+  <!-- Agrega conponentes listos como botones, temas, cartas, etc -->
 
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
@@ -79,13 +91,6 @@
             </ul>
           </li>
 
-          <!-- Botón login -->
-          <li class="nav-item ms-xl-3">
-            <a class="btn btn-primary rounded-pill px-4" href="[URL_DE_INICIO_DE_SESIÓN]">
-              Inicio de Sesión
-            </a>
-          </li>
-
         </ul>
       </div>
     </div>
@@ -95,7 +100,7 @@
   <main class="container py-4">
 
     <!-- Encabezado / Filtros -->
-    <section class="mb-4">
+    <section class="mb-4"> 
       <div class="bg-white shadow-sm rounded-3 px-4 py-3 d-flex flex-column flex-lg-row 
                   align-items-lg-center justify-content-between gap-3">
         <div>
@@ -108,6 +113,7 @@
         </div>
 
         <div class="d-flex flex-wrap gap-2">
+          <!-- Busca/Selecciona el curso y asignatura -->
           <select class="form-select form-select-sm shadow-sm" style="min-width: 180px;">
             <option>Curso: 1° Básico A</option>
             <option>1° Básico B</option>
@@ -119,6 +125,7 @@
             <option>Matemática</option>
             <option>Ciencias</option>
           </select>
+          <!-- Permite seleccionar una fecha -->
           <input type="date" class="form-control form-control-sm shadow-sm" />
         </div>
       </div>
@@ -128,8 +135,11 @@
           <span class="input-group-text bg-white border-end-0">
             <i class="fas fa-search text-slate-400"></i>
           </span>
+          <!-- Permite buscar estudiantes por nombre -->
           <input type="text" class="form-control border-start-0" placeholder="Buscar estudiante..." />
         </div>
+
+        <!-- Boton para exportar asistencia -->
 
         <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2 shadow-sm">
           <i class="fas fa-file-export"></i>
@@ -141,389 +151,6 @@
     <!-- LISTADO / GRID DE ESTUDIANTES -->
     <section class="mb-5">
       <div class="row g-3" id="contenedor-estudiantes">
-        <!-- CARD DE ESTUDIANTE (EJEMPLO) -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                  <div
-                    class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width:40px;height:40px;">
-                    <span class="fw-semibold">AG</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0 text-slate-800 fw-semibold">Ana González</h6>
-                  <small class="text-slate-500">1° Básico A · NEE</small>
-                </div>
-                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
-                  Activo
-                </span>
-              </div>
-
-              <!-- Asistencia rápida -->
-              <div class="mb-3">
-                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
-                <div class="btn-group btn-group-sm w-100" role="group">
-                  <input type="radio" class="btn-check" name="asistencia-101" id="asiste-101" autocomplete="off"
-                    checked>
-                  <label class="btn btn-outline-success" for="asiste-101">
-                    <i class="fas fa-check-circle me-1"></i> Asistente
-                  </label>
-
-                  <input type="radio" class="btn-check" name="asistencia-101" id="inasiste-101" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="inasiste-101">
-                    <i class="fas fa-times-circle me-1"></i> Inasistente
-                  </label>
-                </div>
-              </div>
-
-              <!-- Resumen rápido -->
-              <div class="d-flex flex-wrap gap-1 mb-3">
-                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: 6,1</span>
-                <span class="chip"><i class="fas fa-book-open me-1"></i>Lenguaje: 6,4</span>
-                <span class="chip"><i class="fas fa-user-friends me-1"></i>PIE activo</span>
-              </div>
-
-              <!-- Acciones -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1"
-                  onclick="verInformacion('kQ3yYk8FtscKEOqk0zq1')">
-                  <i class="fas fa-info-circle"></i>
-                  Ver información
-                </button>
-
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                  <i class="fas fa-phone-alt"></i>
-                  Llamar contacto PIE
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <!-- CARD DE ESTUDIANTE (EJEMPLO) -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                  <div
-                    class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width:40px;height:40px;">
-                    <span class="fw-semibold">MH</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0 text-slate-800 fw-semibold">Martina Herrera</h6>
-                  <small class="text-slate-500">1° Básico C · NEE</small>
-                </div>
-                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
-                  Activo
-                </span>
-              </div>
-
-              <!-- Asistencia rápida -->
-              <div class="mb-3">
-                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
-                <div class="btn-group btn-group-sm w-100" role="group">
-                  <input type="radio" class="btn-check" name="asistencia-102" id="asiste-102" autocomplete="off"
-                    checked>
-                  <label class="btn btn-outline-success" for="asiste-102">
-                    <i class="fas fa-check-circle me-1"></i> Asistente
-                  </label>
-
-                  <input type="radio" class="btn-check" name="asistencia-102" id="inasiste-102" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="inasiste-102">
-                    <i class="fas fa-times-circle me-1"></i> Inasistente
-                  </label>
-                </div>
-              </div>
-
-              <!-- Resumen rápido -->
-              <div class="d-flex flex-wrap gap-1 mb-3">
-                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: 5,7</span>
-                <span class="chip"><i class="fas fa-book-open me-1"></i>Lenguaje: 5,3</span>
-                <span class="chip"><i class="fas fa-user-friends me-1"></i>PIE activo</span>
-              </div>
-
-              <!-- Acciones -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
-                  data-bs-target="#modalEstudiante" onclick="cargarEstudianteDemo()">
-                  <i class="fas fa-info-circle"></i>
-                  Ver información
-                </button>
-
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                  <i class="fas fa-phone-alt"></i>
-                  Llamar contacto PIE
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <!-- De aquí puedes duplicar la carta de estudiante -->
-
-
-
-        <!-- CARD DE ESTUDIANTE (EJEMPLO) -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                  <div
-                    class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width:40px;height:40px;">
-                    <span class="fw-semibold">GM</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0 text-slate-800 fw-semibold">Gabriel Mendez</h6>
-                  <small class="text-slate-500">2° Básico B · NEE</small>
-                </div>
-                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
-                  Activo
-                </span>
-              </div>
-
-              <!-- Asistencia rápida -->
-              <div class="mb-3">
-                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
-                <div class="btn-group btn-group-sm w-100" role="group">
-                  <input type="radio" class="btn-check" name="asistencia-103" id="asiste-103" autocomplete="off"
-                    checked>
-                  <label class="btn btn-outline-success" for="asiste-103">
-                    <i class="fas fa-check-circle me-1"></i> Asistente
-                  </label>
-
-                  <input type="radio" class="btn-check" name="asistencia-103" id="inasiste-103" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="inasiste-103">
-                    <i class="fas fa-times-circle me-1"></i> Inasistente
-                  </label>
-                </div>
-              </div>
-
-              <!-- Resumen rápido -->
-              <div class="d-flex flex-wrap gap-1 mb-3">
-                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: 6,3</span>
-                <span class="chip"><i class="fas fa-book-open me-1"></i>Lenguaje: 6,1</span>
-                <span class="chip"><i class="fas fa-user-friends me-1"></i>PIE activo</span>
-              </div>
-
-              <!-- Acciones -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
-                  data-bs-target="#modalEstudiante" onclick="cargarEstudianteDemo()">
-                  <i class="fas fa-info-circle"></i>
-                  Ver información
-                </button>
-
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                  <i class="fas fa-phone-alt"></i>
-                  Llamar contacto PIE
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-
-        <!-- CARD DE ESTUDIANTE (EJEMPLO) -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                  <div
-                    class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width:40px;height:40px;">
-                    <span class="fw-semibold">JR</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0 text-slate-800 fw-semibold">Jorge Rojas</h6>
-                  <small class="text-slate-500">2° Básico D · NEE</small>
-                </div>
-                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
-                  Activo
-                </span>
-              </div>
-
-              <!-- Asistencia rápida -->
-              <div class="mb-3">
-                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
-                <div class="btn-group btn-group-sm w-100" role="group">
-                  <input type="radio" class="btn-check" name="asistencia-104" id="asiste-104" autocomplete="off"
-                    checked>
-                  <label class="btn btn-outline-success" for="asiste-104">
-                    <i class="fas fa-check-circle me-1"></i> Asistente
-                  </label>
-
-                  <input type="radio" class="btn-check" name="asistencia-104" id="inasiste-104" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="inasiste-104">
-                    <i class="fas fa-times-circle me-1"></i> Inasistente
-                  </label>
-                </div>
-              </div>
-
-              <!-- Resumen rápido -->
-              <div class="d-flex flex-wrap gap-1 mb-3">
-                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: 5,9</span>
-                <span class="chip"><i class="fas fa-book-open me-1"></i>Lenguaje: 5,8</span>
-                <span class="chip"><i class="fas fa-user-friends me-1"></i>PIE activo</span>
-              </div>
-
-              <!-- Acciones -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
-                  data-bs-target="#modalEstudiante" onclick="cargarEstudianteDemo()">
-                  <i class="fas fa-info-circle"></i>
-                  Ver información
-                </button>
-
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                  <i class="fas fa-phone-alt"></i>
-                  Llamar contacto PIE
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <!-- CARD DE ESTUDIANTE (EJEMPLO) -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                  <div
-                    class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width:40px;height:40px;">
-                    <span class="fw-semibold">GM</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0 text-slate-800 fw-semibold">Victor Cedeño</h6>
-                  <small class="text-slate-500">3° Básico A · NEE</small>
-                </div>
-                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
-                  Activo
-                </span>
-              </div>
-
-              <!-- Asistencia rápida -->
-              <div class="mb-3">
-                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
-                <div class="btn-group btn-group-sm w-100" role="group">
-                  <input type="radio" class="btn-check" name="asistencia-106" id="asiste-106" autocomplete="off"
-                    checked>
-                  <label class="btn btn-outline-success" for="asiste-106">
-                    <i class="fas fa-check-circle me-1"></i> Asistente
-                  </label>
-
-                  <input type="radio" class="btn-check" name="asistencia-106" id="inasiste-106" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="inasiste-106">
-                    <i class="fas fa-times-circle me-1"></i> Inasistente
-                  </label>
-                </div>
-              </div>
-
-              <!-- Resumen rápido -->
-              <div class="d-flex flex-wrap gap-1 mb-3">
-                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: 6,0</span>
-                <span class="chip"><i class="fas fa-book-open me-1"></i>Lenguaje: 6,5</span>
-                <span class="chip"><i class="fas fa-user-friends me-1"></i>PIE activo</span>
-              </div>
-
-              <!-- Acciones -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" onclick="verInformacion('demo')">
-                  <i class="fas fa-info-circle"></i>
-                  Ver información
-                </button>
-
-
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                  <i class="fas fa-phone-alt"></i>
-                  Llamar contacto PIE
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD DE ESTUDIANTE (EJEMPLO) -->
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card border-0 shadow-sm rounded-3 student-card bg-white position-relative overflow-hidden">
-            <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <div class="me-3">
-                  <div
-                    class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width:40px;height:40px;">
-                    <span class="fw-semibold">GM</span>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0 text-slate-800 fw-semibold">Matias Nuñez</h6>
-                  <small class="text-slate-500">3° Básico B · NEE</small>
-                </div>
-                <span class="pill-status bg-success bg-opacity-10 text-success fw-semibold">
-                  Activo
-                </span>
-              </div>
-
-              <!-- Asistencia rápida -->
-              <div class="mb-3">
-                <label class="form-label mb-1 small text-slate-500">Asistencia clase de hoy</label>
-                <div class="btn-group btn-group-sm w-100" role="group">
-                  <input type="radio" class="btn-check" name="asistencia-105" id="asiste-105" autocomplete="off"
-                    checked>
-                  <label class="btn btn-outline-success" for="asiste-105">
-                    <i class="fas fa-check-circle me-1"></i> Asistente
-                  </label>
-
-                  <input type="radio" class="btn-check" name="asistencia-105" id="inasiste-105" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="inasiste-105">
-                    <i class="fas fa-times-circle me-1"></i> Inasistente
-                  </label>
-                </div>
-              </div>
-
-              <!-- Resumen rápido -->
-              <div class="d-flex flex-wrap gap-1 mb-3">
-                <span class="chip"><i class="fas fa-star text-warning me-1"></i>Promedio general: 6,2</span>
-                <span class="chip"><i class="fas fa-book-open me-1"></i>Lenguaje: 6,4</span>
-                <span class="chip"><i class="fas fa-user-friends me-1"></i>PIE activo</span>
-              </div>
-
-              <!-- Acciones -->
-              <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
-                <button class="btn btn-primary btn-sm d-flex align-items-center gap-1" data-bs-toggle="modal"
-                  data-bs-target="#modalEstudiante" onclick="cargarEstudianteDemo()">
-                  <i class="fas fa-info-circle"></i>
-                  Ver información
-                </button>
-
-                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
-                  <i class="fas fa-phone-alt"></i>
-                  Llamar contacto PIE
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <!-- aquí puedes duplicar la card para más estudiantes -->
       </div>
     </section>
     <section class="mt-5">
@@ -540,83 +167,119 @@
 
 
   <!-- Botón flotante del chat -->
-<button id="chat-button" onclick="toggleChat()">
+  <button id="chat-button" onclick="toggleChat()">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
     </svg>
-</button>
+  </button>
 
-<!-- Contenedor del chat -->
-<div id="chat-container">
+  <!-- Contenedor del chat -->
+  <div id="chat-container">
     <!-- Header -->
     <div class="chat-header">
-        <div>
-            <h4>Asistente InclusIA</h4>
-            <small>Estamos aquí para ayudarte</small>
-        </div>
-        <button class="close-btn" onclick="toggleChat()">✕</button>
+      <div>
+        <h4>Atlas</h4>
+        <small>Estamos aquí para ayudarte</small>
+      </div>
+      <button class="close-btn" onclick="toggleChat()">✕</button>
     </div>
-    
+
     <!-- Mensajes -->
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot">
-            <div class="message-content">
-                ¡Hola! 👋 Soy el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
-            </div>
+      <div class="message bot">
+        <div class="message-content">
+          ¡Hola! 👋 Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
         </div>
+      </div>
     </div>
-    
+
     <!-- Indicador de escritura -->
     <div class="message bot" style="margin-left: 15px;">
-        <div class="typing-indicator" id="typingIndicator">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+      <div class="typing-indicator" id="typingIndicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
-    
+
     <!-- Input -->
     <div class="chat-input">
-        <input 
-            type="text" 
-            id="chatInput" 
-            placeholder="Escribe tu mensaje..."
-            onkeypress="if(event.key === 'Enter') sendMessage()"
-        />
-        <button class="send-btn" onclick="sendMessage()" id="sendBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-        </button>
+      <input type="text" id="chatInput" placeholder="Escribe tu mensaje..."
+        onkeypress="if(event.key === 'Enter') sendMessage()" />
+      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+        </svg>
+      </button>
     </div>
-</div>
+  </div>
 
+  <!-- Contenedor del chat -->
+  <div id="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+      <div>
+        <h4>Atlas</h4>
+        <small>Estamos aquí para ayudarte</small>
+      </div>
+      <button class="close-btn" onclick="toggleChat()">✕</button>
+    </div>
 
+    <!-- Mensajes -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="message-content">
+          ¡Hola! 👋 Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicador de escritura -->
+    <div class="message bot" style="margin-left: 15px;">
+      <div class="typing-indicator" id="typingIndicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Escribe tu mensaje..."
+        onkeypress="if(event.key === 'Enter') sendMessage()" />
+      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+        </svg>
+      </button>
+    </div>
+  </div>
 
 
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_DOMINIO",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_BUCKET",
-      messagingSenderId: "TU_SENDER_ID",
-      appId: "TU_APP_ID"
+      apiKey: "AIzaSyA....",
+      authDomain: "inclusia.firebaseapp.com",
+      projectId: "inclusia",
+      storageBucket: "inclusia.appspot.com",
+      messagingSenderId: "987654321",
+      appId: "1:987654321:web:abc123"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
     window.db = db;
   </script>
 
+
+  <!-- TU JS -->
+  <script type="module" src="static/js/script_clasi.js"></script>
+
   <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="static/js/script_clasi.js"></script>
+  <script type="module" src="static/js/script_clasi.js"></script>
   <script src="static/js/script.js"></script>
   <script src="static/js/chatbot.js"></script>
 </body>
