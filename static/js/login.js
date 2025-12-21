@@ -13,6 +13,41 @@ const passwordInput = document.getElementById("password");
 const errorMsg = document.getElementById("error");
 const loader = document.getElementById("loginLoader");
 
+function login(event) {
+    if (event) event.preventDefault();
+
+    const usuario = usuarioInput.value.trim();
+    const password = passwordInput.value;
+
+    errorMsg.textContent = "";
+    errorMsg.style.opacity = "0";
+
+    if (!usuario || !password) {
+        mostrarError("Por favor, completa todos los campos");
+        return;
+    }
+
+    if (usuariosValidos[usuario] && usuariosValidos[usuario] === password) {
+
+        // ✅ guardar sesión
+        localStorage.setItem("sesion", JSON.stringify({
+            usuario: usuario,
+            timestamp: Date.now()
+        }));
+
+        mostrarLoader();
+
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 2000);
+
+    } else {
+        mostrarError("Usuario o contraseña incorrectos");
+        limpiarCampos();
+    }
+}
+
+
 // Función principal de login
 function login(event) {
     if (event) event.preventDefault();
@@ -121,17 +156,4 @@ passwordInput.addEventListener("input", function () {
         errorMsg.style.opacity = "0";
     }
 });
-
-
-//tiempo de animacion
-if (usuariosValidos[usuario] && usuariosValidos[usuario] === password) {
-
-    mostrarLoader();
-
-
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 3000);
-}
-
 

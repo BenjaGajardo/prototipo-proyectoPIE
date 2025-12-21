@@ -65,20 +65,19 @@
       window.history.pushState(null, "", window.location.href);
     };
 
-    // Verificar si hay sesión activa
-    const sesion = localStorage.getItem("sesion");
-    if (!sesion) {
-      // Si no hay sesión, redirigir al login
-      window.location.replace("login.html");
-    } else {
-      const datos = JSON.parse(sesion);
-      const tiempoTranscurrido = new Date().getTime() - datos.timestamp;
-      // Si la sesión expiró (más de 24 horas), redirigir al login
-      if (tiempoTranscurrido >= 24 * 60 * 60 * 1000) {
-        localStorage.removeItem("sesion");
-        window.location.replace("login.html"); // final
-      }
+    if (usuariosValidos[usuario] && usuariosValidos[usuario] === password){
+      mostrarLoader();
+
+      localStorage.setItem("sesion", JSON, stringify({
+        usuario: usuario,
+        timestamp: new Date().getTime()
+      }));
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 2000);
     }
+
   </script>
   <script src="static/js/login.js"></script>
 </body>
