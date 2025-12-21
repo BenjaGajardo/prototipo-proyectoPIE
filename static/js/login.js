@@ -29,7 +29,7 @@ function login(event) {
 
     if (usuariosValidos[usuario] && usuariosValidos[usuario] === password) {
 
-        // ✅ guardar sesión
+    
         localStorage.setItem("sesion", JSON.stringify({
             usuario: usuario,
             timestamp: Date.now()
@@ -38,7 +38,7 @@ function login(event) {
         mostrarLoader();
 
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "inicio.html";
         }, 2000);
 
     } else {
@@ -72,7 +72,7 @@ function login(event) {
 
         // Redireccionar después de 2 segundos (para ver la animación completa)
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "inicio.html";
         }, 2000);
     } else {
         mostrarError("Usuario o contraseña incorrectos");
