@@ -76,7 +76,7 @@
       // Si la sesión expiró (más de 24 horas), redirigir al login
       if (tiempoTranscurrido >= 24 * 60 * 60 * 1000) {
         localStorage.removeItem("sesion");
-        window.location.replace("login.html");
+        window.location.replace("login.html"); // final
       }
     }
   </script>
