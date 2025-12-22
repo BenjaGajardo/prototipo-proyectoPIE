@@ -818,3 +818,19 @@ body {
 .navbar-nav .btn {
     white-space: nowrap;
 }
+
+#chatMessages h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+#chatMessages h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#chatMessages h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
