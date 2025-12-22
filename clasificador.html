@@ -100,7 +100,7 @@
   <main class="container py-4">
 
     <!-- Encabezado / Filtros -->
-    <section class="mb-4"> 
+    <section class="mb-4">
       <div class="bg-white shadow-sm rounded-3 px-4 py-3 d-flex flex-column flex-lg-row 
                   align-items-lg-center justify-content-between gap-3">
         <div>
@@ -150,23 +150,73 @@
 
     <!-- LISTADO / GRID DE ESTUDIANTES -->
     <section class="mb-5">
+      <div class="card mb-4">
+  <div class="card-body">
+    <h5 class="mb-3">➕ Agregar estudiante</h5>
+
+    <div class="row g-2">
+
+      <div class="col-md-4">
+        <input type="text" id="nombre"
+          class="form-control"
+          placeholder="Nombre del estudiante">
+      </div>
+
+      <div class="col-md-4">
+        <input type="text" id="curso"
+          class="form-control"
+          placeholder="Curso">
+      </div>
+
+      <div class="col-md-2">
+        <input type="number" step="0.1"
+          id="promedio"
+          class="form-control"
+          placeholder="Promedio">
+      </div>
+
+      <div class="col-md-2">
+  <input type="number"
+    step="0.1"
+    min="1"
+    max="7"
+    id="lenguaje"
+    class="form-control"
+    placeholder="Lenguaje">
+</div>
+
+      <div class="col-md-2">
+        <select id="pie" class="form-select">
+          <option value="false">No PIE</option>
+          <option value="true">PIE</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <input type="text"
+          id="telefono_pie"
+          class="form-control"
+          placeholder="Teléfono PIE (opcional)">
+      </div>
+
+      <div class="col-md-12">
+        <button class="btn btn-success mt-2"
+          onclick="agregarEstudiante()">
+          ➕ Agregar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
       <div class="row g-3" id="contenedor-estudiantes">
       </div>
-    </section>
-    <section class="mt-5">
-      <h5>Información del estudiante</h5>
-      <table class="table table-bordered"> <!-- Tabla que muestra la informacion detallada del estudiante seleccionado -->
-        <tbody id="tabla-estudiante">
-          <tr>
-            <td colspan="2">Seleccione un estudiante</td>
-          </tr>
-        </tbody>
-      </table>
     </section>
   </main>
 
 
-   <!-- Botón flotante del chat -->
+  <!-- Botón flotante del chat -->
   <button id="chat-button" onclick="toggleChat()"> <!-- Boton flotante que abre y cierra el chat -->
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
       <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
@@ -188,7 +238,7 @@
     <div class="chat-messages" id="chatMessages">
       <div class="message bot">
         <div class="message-content">
-          ¡Hola! 👋 Soy Atlas, el asistente de AdaptIA. ¿En qué puedo ayudarte hoy?
+          ¡Hola! 👋 Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
         </div>
       </div>
     </div>
@@ -217,19 +267,29 @@
   <!-- Firebase --> <!-- Codigo para c -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyA....",
-      authDomain: "inclusia.firebaseapp.com",
-      projectId: "inclusia",
-      storageBucket: "inclusia.appspot.com",
-      messagingSenderId: "987654321",
-      appId: "1:987654321:web:abc123"
+      apiKey: "AIzaSyD1yw2AbKAQEnSLfwTIPV8ovvLrfUWOX-w",
+      authDomain: "adaptia-cd403.firebaseapp.com",
+      projectId: "adaptia-cd403",
+      storageBucket: "adaptia-cd403.firebasestorage.app",
+      messagingSenderId: "699771313712",
+      appId: "1:699771313712:web:afb71f5a6c67b3561617f5",
+      measurementId: "G-88XP0867G7"
     };
 
     const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+
+    // 🔥 IMPORTANTE
     window.db = db;
+    window.editarEstudiante = editarEstudiante;
+    window.guardarCambios = guardarCambios;
+
   </script>
+
 
 
   <!-- TU JS -->
