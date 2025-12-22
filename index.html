@@ -2,280 +2,84 @@
 <html lang="es">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>¿Qué es? - Sistema NEE y PIE</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" href="static/css/style_clasi.css">
-    <link rel="stylesheet" href="static/css/style_chat.css">
-    <link rel="preload" as="image" href="assets/img/logo/logo_pie.svg" />
-    <link rel="preload" as="image" href="assets/img/hero/libros554.png" />
-    <link rel="preload" as="image" href="assets/img/hero/book443.png" />
-    <link rel="preload" as="image" href="assets/img/hero/birete22.png" />
-    <link rel="preload" as="image" href="assets/img/hero/citas.png" />
-    <link rel="preload" as="image" href="assets/img/hero/ia2.png" />
-    <link rel="preload" as="image" href="assets/img/hero/compu3000.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/login.css">
 </head>
 
-<body>
-    <!-- Navar -->
-    <header class="navbar navbar-expand-xl navbar-light bg-white shadow-sm fixed-top">
-        <div class="container">
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
 
-            <!-- Logo -->
-            <a class="navbar-brand" href="#inicio">
-                <img src="assets/img/logo/LogoTrue-removebg-preview.png" alt="logo" width="150">
-            </a>
-
-            <!-- Botón hamburguesa -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Menú -->
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav ms-auto mb-2 mb-xl-0 align-items-xl-center gap-xl-3">
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#inicio">Inicio</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="clasificador.html">Clasificador</a>
-                    </li>
-
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="contactoPIE.html">Contacto PIE</a>
-                    </li>
-
-                    <!-- Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Ingreso de cursos
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#ingreso-cursos-basica">Enseñanza Básica</a></li>
-                            <li><a class="dropdown-item" href="#ingreso-cursos-media">Enseñanza Media</a></li>
-                        </ul>
-                    </li>
-
-                </ul>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <section class="hero-section hero-2 fix">
-            <div class="frame-shape"><img src="assets/img/hero/GettyImages-1358014313.jpg" alt="shape-img"
-                    width="180" /></div>
-            <div class="man-shape float-bob-y"><img src="assets/img/hero/14a24518cf8d83e1f12573fdff713109.jpg"
-                    alt="shape-img" width="280" /> </div>
-            <div class="girl-shape float-bob-x"><img src="assets/img/hero/istockphoto-1278974019-612x612.jpg"
-                    alt="shape-img" width="220" /> </div>
-            <div class="frame-shape-2"><img src="assets/img/hero/istockphoto-1446882342-612x612.jpg" alt="shape-img"
-                    width="380" /></div>
-            <div class="container">
-                <div class="row g-4 justify-content-center">
-                    <div class="col-lg-12">
-                        <div class="hero-content"> <span class="sub-content wow fadeInUp"> <img
-                                    src="assets/img/logo/LogoTrue-removebg-preview.png" alt="img" width="30" />InclusIA
-                            </span>
-                            <h1 class="wow fadeInUp" data-wow-delay=".4s"> REGISTRATE<span style="color:#40b1cc"> EN
-                                    NUESTRA WEB</span> <br />PARA COMENZAR. 💙🚀 </h1>
-                        <div class="dashboard-image wow fadeInUp" data-wow-delay=".7s"> <img
-                                src="assets/img/hero/docente.png" alt="img" style="border-radius:20px" /> </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="about-section fix section-padding pt-10">
-            <div class="container">
-                <div class="about-wrapper style-2">
-                    <div class="row g-4 align-items-center">
-                        <div class="col-lg-12">
-                            <div class="about-image-items-2">
-                                <div class="row g-4 ">
-                                    <div class="col-md-12 wow fadeInUp" data-wow-delay=".3s">
-                                        <div class="about-image"> <img class="img-fluid object-fit-cover rounded"
-                                                src="assets/img/hero/ia.png" alt="about-img" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row g-4">
-                                    <div class="col-md-12 wow fadeInUp" data-wow-delay=".3s">
-                                        <div class="about-image"> <img class="img-fluid object-fit-cover rounded"
-                                                src="assets/img/hero/docente.png" alt="about-img" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row g-4">
-                                    <div class="col-md-12 wow fadeInUp" data-wow-delay=".3s">
-                                        <div class="about-image"> <img class="img-fluid object-fit-cover rounded"
-                                                src="assets/img/hero/apoderados.png" alt="about-img" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="about-content">
-                                <div class="section-title mt-4">
-                                    <h2 class="wow fadeInUp pt-3" data-wow-delay=".2s">¿Cómo InclusIA mejora los
-                                        procesos administrativos del PIE y mejora los resultados de aprendizaje?</h2>
-                                </div>
-                                <p class="mt-4 mt-md-0 wow fadeInUp" data-wow-delay=".4s">Optimiza la administración de
-                                    tu PIE en tres simples pasos. Con InclusIA, simplificamos la gestión de la
-                                    documentación ministerial, agilizamos los procesos de gestión del equipo PIE,
-                                    aseguramos el cumplimiento de la normativa de manera eficiente, mejoramos los
-                                    aprendizajes de estudio en distintos niveles acorde su evolucion</p>
-                                <div class="icon-items wow fadeInUp pt-4" data-wow-delay=".3s">
-                                    <div class="dot"></div>
-                                    <div class="content">
-                                        <h4>Mejora en el aprendizaje</h4>
-                                        <p>Gracias a InclusIA podemos mejoran el aprendizaje del estudiante mediante
-                                            distintos metodos de enseñanza personalizados y adaptativos, que se ajustan
-                                            a las necesidades individuales de cada estudiante, promoviendo un
-                                            aprendizaje más efectivo y significativo. </p>
-                                    </div>
-                                </div>
-                                <div class="icon-items wow fadeInUp pt-2" data-wow-delay=".5s">
-                                    <div class="dot"></div>
-                                    <div class="content">
-                                        <h4>Automatiza procesos y ahorra tiempo</h4>
-                                        <p>Facilitamos la gestión de informes, planificaciones y registros con
-                                            herramientas automatizadas, les damos planes de aprendizaje personalizados
-                                            de manera eficiente y rapida de tal manera<br />que reducen la carga
-                                            administrativa del equipo PIE, permitiéndoles enfocarse en lo más
-                                            <br />importante: el apoyo a los estudiantes.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="about-section fix section-padding pt-10" style="background-color:#F5F8FB">
-            <div class="container">
-                <div class="about-wrapper style-2">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-lg-12">
-                            <div class="about-content">
-                                <div class="section-title"> <span class="sub-content wow fadeInUp" data-wow-delay=".2s">
-                                        <img src="assets/img/hero/ia2.png" alt="img" width="300" /></span>
-                                </div>
-                                <div class="icon-items wow fadeInUp" data-wow-delay=".3s">
-                                    <div class="dot"></div>
-                                    <div class="content">
-                                        <h4>Asesoramiento Mediante Chat de IA</h4>
-                                        <p>Nuestro sistema incluye un chat de inteligencia artificial que brinda
-                                            asesoramiento instantáneo y personalizado a los profesores. Ya sea que
-                                            necesiten ayuda con la elaboración de informes, estrategias de inclusión o
-                                            cualquier otra consulta relacionada con la gestión del estudiante, nuestro
-                                            chat de IA está disponible las 24 horas del día para proporcionar respuestas
-                                            rápidas y precisas. </p>
-                                    </div>
-                                </div>
-                                <div class="icon-items wow fadeInUp pt-4" data-wow-delay=".5s">
-                                    <div class="dot"></div>
-                                    <div class="content">
-                                        <h4>Contacto Con Docentes PIE y Familiares</h4>
-                                        <p>Facilitamos la comunicación entre el equipo PIE a través de una plataforma
-                                            integrada. Esto mejora la colaboración y el intercambio de información
-                                            relevante, lo que contribuye a un enfoque más holístico y efectivo en el
-                                            apoyo a los estudiantes, en caso de una emergencia habra la disposcion de un
-                                            boton de emergecia, el cual contara con distintas herramientas a la mano
-                                            incluyendo los numeros de los Familiares en el caso de que si algo sucede.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="about-image-items-3">
-                                <div class="row">
-                                    <div class="section-title2" data-wow-delay=".3s">
-                                        <div class="about-image"> <img clas="img-fluid object-fit-cover rounded"
-                                                src="assets/img/hero/docenteFam.png" alt="about-img" />
-                                        </div>
-                                        <div class="about-image"> <img clas="img-fluid object-fit-cover rounded"
-                                                src="assets/img/hero/Docente3.png" alt="about-img" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-<!-- Botón flotante del chat -->
-<button id="chat-button" onclick="toggleChat()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-    </svg>
-</button>
-
-<!-- Contenedor del chat -->
-<div id="chat-container">
-    <!-- Header -->
-    <div class="chat-header">
-      <div>
-        <h4>Atlas</h4>
-        <small>Estamos aquí para ayudarte</small>
-      </div>
-      <button class="close-btn" onclick="toggleChat()">✕</button>
-    </div>
-
-    <!-- Mensajes -->
-    <div class="chat-messages" id="chatMessages">
-      <div class="message bot">
-        <div class="message-content">
-          ¡Hola! 👋 Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
-        </div>
+  <!-- Loader de pantalla completa con animación de cubo 3D -->
+  <div class="loader-overlay" id="loginLoader"> <!-- Pantalla de carga -->
+    <div class="loader">
+      <div class="cube">
+        <div class="face"></div>
+        <div class="face"></div>
+        <div class="face"></div>
+        <div class="face"></div>
+        <div class="face"></div>
+        <div class="face"></div>
       </div>
     </div>
-    
-    <!-- Indicador de escritura -->
-    <div class="message bot" style="margin-left: 15px;">
-        <div class="typing-indicator" id="typingIndicator">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-    
-    <!-- Input -->
-    <div class="chat-input">
-        <input 
-            type="text" 
-            id="chatInput" 
-            placeholder="Escribe tu mensaje..."
-            onkeypress="if(event.key === 'Enter') sendMessage()"
-        />
-        <button class="send-btn" onclick="sendMessage()" id="sendBtn">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-        </button>
-    </div>
-</div>
+    <div class="loader-text">Iniciando sesión...</div>
+  </div>
 
-    <!-- Scripts existentes -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="static/js/script.js"></script>
-    <script src="static/js/script2.js"></script>
-    <script src="static/js/chatbot.js"></script>
+  <div class="login-box"> <!-- Contenedor principal del formulario login -->
+    <p>Login</p>
+    <form id="loginForm"> <!-- Contiene los campos login -->
+      <div class="user-box">
+        <!-- campo que escribe el usuario o email -->
+        <input required="" id="usuario" name="usuario" type="text" autocomplete="username">
+        <label>Email</label>
+      </div>
+      <div class="user-box">
+        <!-- Campo para escribir la contraseña -->
+        <input required="" id="password" name="password" type="password" autocomplete="current-password">
+        <label>Password</label>
+      </div>
+      <!-- Mensaje para mostrar error -->
+      <p id="error" style="color: #ff6b6b; font-size: 14px; margin: 10px 0; min-height: 20px;"></p>
+      <a href="#" id="submitBtn"> <!-- Boton para enviar el login -->
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Submit
+      </a>
+    </form>
+  </div>
 
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Evitar volver al login con el botón atrás
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    if (usuariosValidos[usuario] && usuariosValidos[usuario] === password){
+      mostrarLoader();
+
+      localStorage.setItem("sesion", JSON, stringify({
+        usuario: usuario,
+        timestamp: new Date().getTime()
+      }));
+
+      setTimeout(() => {
+        window.location.href = "inicio.html";
+      }, 2000);
+    }
+
+  </script>
+  <script src="static/js/login.js"></script>
 </body>
 
 </html>
