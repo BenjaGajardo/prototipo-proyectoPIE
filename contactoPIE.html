@@ -77,9 +77,11 @@
                     <div class="col-lg-10">
                         <div class="row chat-container"> <!-- Contiene la estructura del chat -->
 
-                            <div class="col-12 col-md-4 p-0 contact-list"> <!-- Muestra los docentes listos para chatear -->
+                            <div class="col-12 col-md-4 p-0 contact-list">
+                                <!-- Muestra los docentes listos para chatear -->
                                 <h5 class="p-3 mb-0" style="background-color: #f8f9fa;">Docentes Disponibles</h5>
-                                <div class="contact-item active" data-name="Docente 1" data-role="Básica"> <!-- Representa a un docente -->
+                                <div class="contact-item active" data-name="Docente 1" data-role="Básica">
+                                    <!-- Representa a un docente -->
                                     <div class="d-flex align-items-center">
                                         <img src="assets/img/hero/3177440.png" alt="Docente 1" width="40"
                                             class="rounded-circle me-3">
@@ -119,14 +121,16 @@
                                     </div>
 
                                     <div class="chat-body" id="chat-messages"> <!-- Aqui aparecen los mensajes -->
-                                        <div class="message received"> <!-- Mensaje recivido o mensaje enviado por docente -->
+                                        <div class="message received">
+                                            <!-- Mensaje recivido o mensaje enviado por docente -->
                                             <div class="message-content">
                                                 Hola, buenos días. ¿En qué puedo ayudarte hoy con el estudiante José?
                                             </div>
                                         </div>
                                         <div class="message sent"> <!-- Mensaje enviado por el usuario -->
                                             <div class="message-content">
-                                                Buenos días Docente. Quería consultarte si ya tienes la planificación del
+                                                Buenos días Docente. Quería consultarte si ya tienes la planificación
+                                                del
                                                 Estudiante.
                                             </div>
                                         </div>
@@ -154,6 +158,48 @@
             </div>
         </section>
     </main>
+    <!-- Contenedor del chat -->
+    <div id="chat-container"> <!-- Contiene mensajes, encabezado, input del texto -->
+        <!-- Header -->
+        <div class="chat-header">
+            <div>
+                <h4>Atlas</h4>
+                <small>Estamos aquí para ayudarte</small>
+            </div>
+            <button class="close-btn" onclick="toggleChat()">✕</button>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    ¡Hola! 👋 Soy Atlas, el asistente de AdaptIA. ¿En qué puedo ayudarte hoy?
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador de escritura -->
+        <div class="message bot" style="margin-left: 15px;">
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Escribe tu mensaje..."
+                onkeypress="if(event.key === 'Enter') sendMessage()" />
+            <!-- Permite enviar mensaje presionando enter -->
+            <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
