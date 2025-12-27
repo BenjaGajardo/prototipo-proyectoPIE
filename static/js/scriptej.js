@@ -24,6 +24,7 @@ const db = getFirestore(app);
 
 const contenedor = document.getElementById("contenedor-estudiantes");
 
+
 /* LISTAR ESTUDIANTES */
 onSnapshot(collection(db, "estudiantes"), (snap) => {
   contenedor.innerHTML = "";
@@ -31,14 +32,43 @@ onSnapshot(collection(db, "estudiantes"), (snap) => {
   snap.forEach(d => {
     const e = d.data();
 
+    const nombre = e.nombre ?? "Sin nombre";
+    const curso = e.curso ?? "Sin curso";
+    const promedio = e.promedio ?? "—";
+    const esPIE = e.pie === true;
+    const telefonoPIE = e.telefono_pie?.trim() || "—";
+
     contenedor.innerHTML += `
       <div class="col-md-4">
-        <div class="card p-3 shadow-sm">
-          <h6>${e.nombre ?? "Sin nombre"}</h6>
-          <button class="btn btn-primary btn-sm mt-2"
-            onclick="abrirModal('${d.id}')">
-            Ver información
-          </button>
+        <div class="card p-3 shadow-sm h-100">
+
+          <h6 class="fw-bold mb-1">${nombre}</h6>
+
+          <p class="mb-1 text-muted small">
+            📘 Curso: ${curso}
+          </p>
+
+          <p class="mb-1 small">
+            📊 Promedio: ${promedio}
+          </p>
+
+          <span class="badge ${esPIE ? "bg-success" : "bg-secondary"} mb-2">
+            PIE: ${esPIE ? "Sí" : "No"}
+          </span>
+
+          ${esPIE ? `
+            <p class="small text-muted mb-2">
+              📞 PIE: ${telefonoPIE}
+            </p>
+          ` : ""}
+
+          <div class="mt-auto text-center">
+            <button class="btn btn-primary btn-sm"
+              onclick="abrirModal('${d.id}')">
+              Ver información
+            </button>
+          </div>
+
         </div>
       </div>
     `;
