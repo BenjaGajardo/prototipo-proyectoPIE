@@ -4,9 +4,10 @@ import {
   doc,
   updateDoc,
   addDoc,
-  deleteDoc,
-  getDoc
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+let unsuscribeModal = null;
 
 
 
@@ -16,6 +17,7 @@ function cargarEstudiantes() {
   const ref = collection(window.db, "estudiantes");
 
   onSnapshot(ref, (querySnapshot) => {
+    console.log("🔥 SNAPSHOT ACTUALIZADO");
     contenedor.innerHTML = "";
 
     if (querySnapshot.empty) {
@@ -102,7 +104,11 @@ async function guardarCambios(id) {
     fortalezas: document.getElementById(`fortalezas-${id}`).value.trim(),
     observaciones_socioemocionales: document.getElementById(`socio-${id}`).value.trim(),
     recomendaciones: document.getElementById(`recomendaciones-${id}`).value.trim(),
-    seguimiento_pie: document.getElementById(`seguimiento-${id}`).value.trim()
+    seguimiento_pie: document.getElementById(`seguimiento-${id}`).value.trim(),
+    nombre: document.getElementById("edit-nombre").value.trim(),
+    curso: document.getElementById("edit-curso").value.trim(),
+    promedio: document.getElementById("edit-promedio").value.trim(),
+    telefono_pie: document.getElementById("edit-telefono-pie").value.trim()
   });
 
   alert("✅ Información PIE actualizada");
@@ -144,50 +150,108 @@ function toggleAgregar() {
   }
 }
 
+
+async function agregarEstudiante() {
+
+  await addDoc(collection(window.db, "estudiantes"), {
+    diagnostico_principal: document.getElementById("diagnostico").value.trim(),
+    nee: document.getElementById("nee").value
+      .split(",")
+      .map(n => n.trim())
+      .filter(n => n !== ""),
+    observaciones: document.getElementById("observaciones").value.trim(),
+    adecuaciones: document.getElementById("adecuaciones").value.trim(),
+
+    // 👇 NUEVOS CAMPOS STRING
+    fortalezas: document.getElementById("fortalezas").value.trim(),
+    observaciones_socioemocionales: document.getElementById("socio").value.trim(),
+    recomendaciones: document.getElementById("recomendaciones").value.trim(),
+    seguimiento_pie: document.getElementById("seguimiento").value.trim(),
+
+    pie: true
+  });
+
+  alert("✅ Estudiante agregado correctamente");
+}
+
+
+
+
+
 window.toggleAgregar = toggleAgregar;
 
 
 
 async function abrirModal(id) {
-  console.log("ABRIENDO MODAL", id);
-  const modalEl = document.getElementById("modalEstudiante");
-  console.log("MODAL EXISTE?", modalEl);
-  console.log("BOOTSTRAP?", typeof bootstrap);
 
   const ref = doc(window.db, "estudiantes", id);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
 
-  const e = snap.data();
+  // 🔥 cerrar listener anterior si existe
+  if (unsuscribeModal) unsuscribeModal();
 
-  document.getElementById("modalNombre").innerText = e.nombre ?? "Estudiante";
+  unsuscribeModal = onSnapshot(ref, (snap) => {
+    if (!snap.exists()) return;
 
-  // TAB INFO
-  document.getElementById("tab-info").innerHTML = `
-    <p><strong>Diagnóstico:</strong><br>${e.diagnostico_principal ?? "—"}</p>
-    <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ") || "—"}</p>
-    <p><strong>Observaciones:</strong></p>
-    <p style="white-space:pre-line">${e.observaciones ?? "—"}</p>
-  `;
+    const e = snap.data();
 
-  // TAB EDITAR
-  document.getElementById("tab-editar").innerHTML = `
-    <label class="form-label">Diagnóstico</label>
-    <input class="form-control mb-2" id="edit-diagnostico" value="${e.diagnostico_principal ?? ""}">
+    document.getElementById("modalNombre").innerText =
+      e.nombre ?? "Estudiante";
 
-    <label class="form-label">NEE</label>
-    <input class="form-control mb-2" id="edit-nee" value="${(e.nee ?? []).join(", ")}">
+    // TAB INFO
+    document.getElementById("tab-info").innerHTML = `
+  <p><strong>Diagnóstico:</strong><br>${e.diagnostico_principal ?? "—"}</p>
 
-    <label class="form-label">Observaciones</label>
-    <textarea class="form-control mb-2" id="edit-observaciones">${e.observaciones ?? ""}</textarea>
+  <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ") || "—"}</p>
 
-    <button class="btn btn-success btn-sm" onclick="guardarDesdeModal('${id}')">
-      💾 Guardar cambios
-    </button>
-  `;
+  <p><strong>Observaciones pedagógicas:</strong></p>
+  <p style="white-space:pre-line">${e.observaciones ?? "—"}</p>
 
-  // TAB ELIMINAR
-  document.getElementById("tab-eliminar").innerHTML = `
+  <hr>
+
+  <p><strong>Fortalezas:</strong></p>
+  <p style="white-space:pre-line">${e.fortalezas ?? "—"}</p>
+
+  <p><strong>Aspectos socioemocionales:</strong></p>
+  <p style="white-space:pre-line">${e.observaciones_socioemocionales ?? "—"}</p>
+
+  <p><strong>Recomendaciones:</strong></p>
+  <p style="white-space:pre-line">${e.recomendaciones ?? "—"}</p>
+
+  <p><strong>Seguimiento PIE:</strong></p>
+  <p style="white-space:pre-line">${e.seguimiento_pie ?? "—"}</p>
+`;
+
+
+    // TAB EDITAR
+    document.getElementById("tab-editar").innerHTML = `
+  <label class="form-label">Diagnóstico</label>
+  <input class="form-control mb-2" id="edit-diagnostico" value="${e.diagnostico_principal ?? ""}">
+
+  <label class="form-label">NEE</label>
+  <input class="form-control mb-2" id="edit-nee" value="${(e.nee ?? []).join(", ")}">
+
+  <label class="form-label">Observaciones</label>
+  <textarea class="form-control mb-2" id="edit-observaciones">${e.observaciones ?? ""}</textarea>
+
+  <label class="form-label">Fortalezas</label>
+  <textarea class="form-control mb-2" id="edit-fortalezas">${e.fortalezas ?? ""}</textarea>
+
+  <label class="form-label">Aspectos socioemocionales</label>
+  <textarea class="form-control mb-2" id="edit-socio">${e.observaciones_socioemocionales ?? ""}</textarea>
+
+  <label class="form-label">Recomendaciones</label>
+  <textarea class="form-control mb-2" id="edit-recomendaciones">${e.recomendaciones ?? ""}</textarea>
+
+  <label class="form-label">Seguimiento PIE</label>
+  <textarea class="form-control mb-3" id="edit-seguimiento">${e.seguimiento_pie ?? ""}</textarea>
+
+  <button class="btn btn-success btn-sm" onclick="guardarDesdeModal('${id}')">
+    💾 Guardar cambios
+  </button>
+`;
+
+    // TAB ELIMINAR
+    document.getElementById("tab-eliminar").innerHTML = `
     <div class="alert alert-danger">
       Esta acción no se puede deshacer.
     </div>
@@ -197,8 +261,10 @@ async function abrirModal(id) {
       🗑️ Eliminar estudiante
     </button>
   `;
-
-  new bootstrap.Modal(document.getElementById("modalEstudiante")).show();
+  });
+  new bootstrap.Modal(
+    document.getElementById("modalEstudiante")
+  ).show();
 }
 
 
@@ -211,11 +277,22 @@ async function guardarDesdeModal(id) {
       .split(",")
       .map(n => n.trim())
       .filter(n => n !== ""),
-    observaciones: document.getElementById("edit-observaciones").value.trim()
+    observaciones: document.getElementById("edit-observaciones").value.trim(),
+
+    // 👇 NUEVOS STRINGS
+    fortalezas: document.getElementById("edit-fortalezas").value.trim(),
+    observaciones_socioemocionales: document.getElementById("edit-socio").value.trim(),
+    recomendaciones: document.getElementById("edit-recomendaciones").value.trim(),
+    seguimiento_pie: document.getElementById("edit-seguimiento").value.trim(),
+    nombre: document.getElementById("edit-nombre").value.trim(),
+    curso: document.getElementById("edit-curso").value.trim(),
+    promedio: document.getElementById("edit-promedio").value.trim(),
+    telefono_pie: document.getElementById("edit-telefono-pie").value.trim()
   });
 
-  alert("✅ Información actualizada");
+  alert("✅ Información PIE actualizada");
 }
+
 
 window.guardarDesdeModal = guardarDesdeModal;
 
@@ -229,11 +306,21 @@ async function eliminarDesdeModal(id, nombre) {
 
   alert("✅ Estudiante eliminado");
 
-  bootstrap.Modal.getInstance(
+  const modal = window.bootstrap.Modal.getInstance(
     document.getElementById("modalEstudiante")
-  ).hide();
+  );
+
+  if (modal) modal.hide();
 }
+
 
 window.eliminarDesdeModal = eliminarDesdeModal;
 window.abrirModal = abrirModal;
 
+document.getElementById("modalEstudiante")
+  .addEventListener("hidden.bs.modal", () => {
+    if (unsuscribeModal) {
+      unsuscribeModal();
+      unsuscribeModal = null;
+    }
+  });

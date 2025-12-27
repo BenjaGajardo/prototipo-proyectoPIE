@@ -38,5 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+
 /*Pestaña: Clasificacion*/
 
