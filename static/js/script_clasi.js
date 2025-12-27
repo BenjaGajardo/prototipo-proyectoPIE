@@ -4,7 +4,8 @@ import {
   doc,
   updateDoc,
   addDoc,
-  deleteDoc
+  deleteDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
@@ -59,26 +60,12 @@ function cargarEstudiantes() {
           : ""
         }
 
-        <div class="d-flex justify-content-center gap-2 mt-3">
-          <button class="btn btn-primary btn-sm"
-            onclick="verInformacion('${docSnap.id}', this)">
-            Ver información
-          </button>
-
-          <button class="btn btn-warning btn-sm"
-            onclick="editarEstudiante('${docSnap.id}', this)">
-            ✏️ Editar
-          </button>
-
-          <button class="btn btn-danger btn-sm"
-          style="background-color:#dc3545; color:white;"
-            onclick="eliminarEstudiante('${docSnap.id}', '${nombre}')">
-            Eliminar
-          </button>
+        <div class="d-flex justify-content-center mt-3">
+<button class="btn btn-primary btn-sm btn-ver-info"
+  data-id="${docSnap.id}">
+  Ver información
+</button>
         </div>
-
-        <div class="info-estudiante mt-3 d-none"></div>
-        <div class="editar-estudiante mt-3 d-none"></div>
 
       </div>
     </div>
@@ -89,186 +76,39 @@ function cargarEstudiantes() {
   });
 }
 
-
-function verInformacion(id, boton) {
-
-  const cardBody = boton.closest(".card-body");
-  const contenedorInfo = cardBody.querySelector(".info-estudiante");
-
-  if (!contenedorInfo.classList.contains("d-none")) {
-    contenedorInfo.classList.add("d-none");
-    contenedorInfo.innerHTML = "";
-    return;
-  }
-
-  const ref = doc(window.db, "estudiantes", id);
-
-  onSnapshot(ref, (snap) => {
-    if (!snap.exists()) return;
-
-    const e = snap.data();
-
-    contenedorInfo.innerHTML = `
-      <div class="border rounded p-3 bg-light small">
-        <p><strong>Nombre:</strong> ${e.nombre}</p>
-        <p><strong>Curso:</strong> ${e.curso}</p>
-        <p><strong>Promedio:</strong> ${e.promedio}</p>
-        <p><strong>Lenguaje:</strong> ${e.lenguaje ?? "—"}</p>
-        <p><strong>PIE:</strong> ${e.pie ? "Sí" : "No"}</p>
-      </div>
-    `;
-
-    contenedorInfo.classList.remove("d-none");
-  });
-}
-
-
-window.verInformacion = verInformacion;
 window.cargarEstudiantes = cargarEstudiantes;
 // 👇 ESTO CARGA AUTOMÁTICAMENTE
 cargarEstudiantes();
 
-function editarEstudiante(id, boton) {
-
-  const cardBody = boton.closest(".card-body");
-  const contenedorEditar = cardBody.querySelector(".editar-estudiante");
-
-  // Toggle (abrir / cerrar)
-  if (!contenedorEditar.classList.contains("d-none")) {
-    contenedorEditar.classList.add("d-none");
-    contenedorEditar.innerHTML = "";
-    return;
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn-ver-info")) {
+    const id = e.target.dataset.id;
+    abrirModal(id);
   }
+});
 
-  const ref = doc(window.db, "estudiantes", id);
-
-  onSnapshot(ref, (snap) => {
-    if (!snap.exists()) return;
-
-    const e = snap.data();
-
-    contenedorEditar.innerHTML = `
-      <div class="border rounded p-3 bg-light small">
-        <div class="mb-2">
-          <label class="form-label">Nombre</label>
-          <input class="form-control form-control-sm"
-            id="nombre-${id}" value="${e.nombre ?? ""}">
-        </div>
-
-        <div class="mb-2">
-          <label class="form-label">Curso</label>
-          <input class="form-control form-control-sm"
-            id="curso-${id}" value="${e.curso ?? ""}">
-        </div>
-
-        <div class="mb-2">
-          <label class="form-label">Promedio</label>
-          <input type="number" step="0.1"
-            class="form-control form-control-sm"
-            id="promedio-${id}" value="${e.promedio ?? ""}">
-        </div>
-
-        <div class="mb-2">
-          <label class="form-label small">Lenguaje</label>
-          <input type="number"
-            step="0.1"
-            min="1"
-            max="7"
-            class="form-control form-control-sm"
-            id="edit-lenguaje" value="${e.lenguaje ?? ""}">
-        </div>
-
-        <div class="form-check mb-2">
-          <input class="form-check-input"
-            type="checkbox"
-            id="pie-${id}" ${e.pie ? "checked" : ""}>
-          <label class="form-check-label">PIE</label>
-        </div>
-
-        <div class="mb-2">
-          <label>Teléfono PIE</label>
-          <input type="text"
-            class="form-control form-control-sm"
-            id="edit-telefono-${id}"
-            value="${e.telefono_pie ?? ""}">
-        </div>
-
-        <button class="btn btn-success btn-sm"
-          onclick="guardarCambios('${id}')">
-          💾 Guardar cambios
-        </button>
-      </div>
-    `;
-
-    contenedorEditar.classList.remove("d-none");
-  });
-}
 
 async function guardarCambios(id) {
 
   const ref = doc(window.db, "estudiantes", id);
 
-  const nombre = document.getElementById(`nombre-${id}`).value.trim();
-  const curso = document.getElementById(`curso-${id}`).value.trim();
-  const promedioInput = document.getElementById(`promedio-${id}`).value;
-  const pie = document.getElementById(`pie-${id}`).checked;
-  const telefonoPIE = document.getElementById(`edit-telefono-${id}`).value.trim();
-  const lenguaje = document.getElementById(`edit-lenguaje`).value;
-
-  const promedio = promedioInput === "" ? null : Number(promedioInput);
-
   await updateDoc(ref, {
-    nombre,
-    curso,
-    promedio,
-    lenguaje: lenguaje ? Number(lenguaje) : null,
-    pie,
-    telefono_pie: telefonoPIE
+    diagnostico_principal: document.getElementById(`diagnostico-${id}`).value.trim(),
+    nee: document.getElementById(`nee-${id}`).value
+      .split(",")
+      .map(n => n.trim())
+      .filter(n => n !== ""),
+    observaciones: document.getElementById(`observaciones-${id}`).value.trim(),
+    fortalezas: document.getElementById(`fortalezas-${id}`).value.trim(),
+    observaciones_socioemocionales: document.getElementById(`socio-${id}`).value.trim(),
+    recomendaciones: document.getElementById(`recomendaciones-${id}`).value.trim(),
+    seguimiento_pie: document.getElementById(`seguimiento-${id}`).value.trim()
   });
 
-  alert("✅ Estudiante actualizado");
+  alert("✅ Información PIE actualizada");
 }
 
-window.editarEstudiante = editarEstudiante;
 window.guardarCambios = guardarCambios;
-
-
-
-async function agregarEstudiante() {
-
-  const nombre = document.getElementById("nombre").value.trim();
-  const curso = document.getElementById("curso").value.trim();
-  const promedio = document.getElementById("promedio").value;
-  const pie = document.getElementById("pie").value === "true";
-  const telefono = document.getElementById("telefono_pie").value.trim();
-  const lenguaje = document.getElementById("lenguaje").value;
-
-  // Validación mínima
-  if (!nombre || !curso) {
-    alert("Nombre y curso son obligatorios");
-    return;
-  }
-
-  await addDoc(collection(window.db, "estudiantes"), {
-    nombre: nombre,
-    curso: curso,
-    promedio: promedio ? Number(promedio) : null,
-    pie: pie,
-    telefono_pie: pie ? telefono || null : null,
-    lenguaje: lenguaje ? Number(lenguaje) : null,
-    creado: new Date()
-  });
-
-  // limpiar formulario
-  document.getElementById("nombre").value = "";
-  document.getElementById("curso").value = "";
-  document.getElementById("promedio").value = "";
-  document.getElementById("lenguaje").value = "";
-  document.getElementById("pie").value = "false";
-  document.getElementById("telefono_pie").value = "";
-}
-
-window.agregarEstudiante = agregarEstudiante;
 
 
 
@@ -289,3 +129,111 @@ async function eliminarEstudiante(id, nombre) {
 }
 
 window.eliminarEstudiante = eliminarEstudiante;
+
+
+function toggleAgregar() {
+  const form = document.getElementById("form-agregar");
+  const boton = document.getElementById("btn-expandir");
+
+  if (form.classList.contains("d-none")) {
+    form.classList.remove("d-none");
+    boton.innerHTML = "🔼 Contraer";
+  } else {
+    form.classList.add("d-none");
+    boton.innerHTML = "🔽 Expandir";
+  }
+}
+
+window.toggleAgregar = toggleAgregar;
+
+
+
+async function abrirModal(id) {
+  console.log("ABRIENDO MODAL", id);
+  const modalEl = document.getElementById("modalEstudiante");
+  console.log("MODAL EXISTE?", modalEl);
+  console.log("BOOTSTRAP?", typeof bootstrap);
+
+  const ref = doc(window.db, "estudiantes", id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const e = snap.data();
+
+  document.getElementById("modalNombre").innerText = e.nombre ?? "Estudiante";
+
+  // TAB INFO
+  document.getElementById("tab-info").innerHTML = `
+    <p><strong>Diagnóstico:</strong><br>${e.diagnostico_principal ?? "—"}</p>
+    <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ") || "—"}</p>
+    <p><strong>Observaciones:</strong></p>
+    <p style="white-space:pre-line">${e.observaciones ?? "—"}</p>
+  `;
+
+  // TAB EDITAR
+  document.getElementById("tab-editar").innerHTML = `
+    <label class="form-label">Diagnóstico</label>
+    <input class="form-control mb-2" id="edit-diagnostico" value="${e.diagnostico_principal ?? ""}">
+
+    <label class="form-label">NEE</label>
+    <input class="form-control mb-2" id="edit-nee" value="${(e.nee ?? []).join(", ")}">
+
+    <label class="form-label">Observaciones</label>
+    <textarea class="form-control mb-2" id="edit-observaciones">${e.observaciones ?? ""}</textarea>
+
+    <button class="btn btn-success btn-sm" onclick="guardarDesdeModal('${id}')">
+      💾 Guardar cambios
+    </button>
+  `;
+
+  // TAB ELIMINAR
+  document.getElementById("tab-eliminar").innerHTML = `
+    <div class="alert alert-danger">
+      Esta acción no se puede deshacer.
+    </div>
+
+    <button class="btn btn-danger"
+      onclick="eliminarDesdeModal('${id}', '${e.nombre ?? "Estudiante"}')">
+      🗑️ Eliminar estudiante
+    </button>
+  `;
+
+  new bootstrap.Modal(document.getElementById("modalEstudiante")).show();
+}
+
+
+
+async function guardarDesdeModal(id) {
+
+  await updateDoc(doc(window.db, "estudiantes", id), {
+    diagnostico_principal: document.getElementById("edit-diagnostico").value.trim(),
+    nee: document.getElementById("edit-nee").value
+      .split(",")
+      .map(n => n.trim())
+      .filter(n => n !== ""),
+    observaciones: document.getElementById("edit-observaciones").value.trim()
+  });
+
+  alert("✅ Información actualizada");
+}
+
+window.guardarDesdeModal = guardarDesdeModal;
+
+
+async function eliminarDesdeModal(id, nombre) {
+
+  const ok = confirm(`¿Eliminar definitivamente a ${nombre}?`);
+  if (!ok) return;
+
+  await deleteDoc(doc(window.db, "estudiantes", id));
+
+  alert("✅ Estudiante eliminado");
+
+  bootstrap.Modal.getInstance(
+    document.getElementById("modalEstudiante")
+  ).hide();
+}
+
+window.eliminarDesdeModal = eliminarDesdeModal;
+window.abrirModal = abrirModal;
+

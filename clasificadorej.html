@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Modal Estudiante - Ejemplo</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- CSS propio -->
+  <link rel="stylesheet" href="static/css/style_ej.css">
+</head>
+<body>
+
+
+<div class="container py-5">
+  <h3 class="mb-4">Estudiantes</h3>
+
+  <div id="contenedor-estudiantes" class="row g-3"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalEstudiante" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNombre">Estudiante</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info">
+              Información
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#editar">
+              Editar
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link text-danger" data-bs-toggle="tab" data-bs-target="#eliminar">
+              Eliminar
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="info"></div>
+          <div class="tab-pane fade" id="editar"></div>
+          <div class="tab-pane fade" id="eliminar"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Firebase + App -->
+<script type="module" src="static/js/scriptej.js"></script>
+
+</body>
+</html>

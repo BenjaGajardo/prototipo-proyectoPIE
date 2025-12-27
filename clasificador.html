@@ -149,71 +149,134 @@
     </section>
 
     <!-- LISTADO / GRID DE ESTUDIANTES -->
-    <section class="mb-5">
-      <div class="card mb-4">
-  <div class="card-body">
-    <h5 class="mb-3">➕ Agregar estudiante</h5>
+<section class="mb-5">
 
-    <div class="row g-2">
+  <div class="card shadow-sm">
+    <div class="card-body">
 
-      <div class="col-md-4">
-        <input type="text" id="nombre"
-          class="form-control"
-          placeholder="Nombre del estudiante">
-      </div>
+      <!-- TÍTULO (MISMO LUGAR ORIGINAL) -->
+      <h5 class="mb-3">➕ Agregar estudiante</h5>
 
-      <div class="col-md-4">
-        <input type="text" id="curso"
-          class="form-control"
-          placeholder="Curso">
-      </div>
-
-      <div class="col-md-2">
-        <input type="number" step="0.1"
-          id="promedio"
-          class="form-control"
-          placeholder="Promedio">
-      </div>
-
-      <div class="col-md-2">
-  <input type="number"
-    step="0.1"
-    min="1"
-    max="7"
-    id="lenguaje"
-    class="form-control"
-    placeholder="Lenguaje">
-</div>
-
-      <div class="col-md-2">
-        <select id="pie" class="form-select">
-          <option value="false">No PIE</option>
-          <option value="true">PIE</option>
-        </select>
-      </div>
-
-      <div class="col-md-4">
-        <input type="text"
-          id="telefono_pie"
-          class="form-control"
-          placeholder="Teléfono PIE (opcional)">
-      </div>
-
-      <div class="col-md-12">
-        <button class="btn btn-success mt-2"
-          onclick="agregarEstudiante()">
-          ➕ Agregar
+      <!-- BOTÓN EXPANDIR -->
+      <div class="text-center mb-3">
+        <button
+          id="btn-expandir"
+          class="btn btn-primary btn-sm px-4"
+          onclick="toggleAgregar()">
+          🔽 Expandir
         </button>
+      </div>
+
+      <!-- FORMULARIO OCULTO -->
+      <div id="form-agregar" class="d-none">
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label">Diagnóstico principal</label>
+            <input type="text" id="diagnostico" class="form-control">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">NEE</label>
+            <input type="text" id="nee" class="form-control">
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label">Observaciones pedagógicas</label>
+            <textarea id="observaciones" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label">Adecuaciones curriculares</label>
+            <textarea id="adecuaciones" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Fortalezas</label>
+            <textarea id="fortalezas" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Aspectos socioemocionales</label>
+            <textarea id="socio" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label">Recomendaciones</label>
+            <textarea id="recomendaciones" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label">Seguimiento PIE</label>
+            <textarea id="seguimiento" class="form-control" rows="2"></textarea>
+          </div>
+
+          <div class="col-md-12 text-center">
+            <button class="btn btn-success mt-2" onclick="agregarEstudiante()">
+              ➕ Agregar estudiante
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row g-3 mt-4" id="contenedor-estudiantes"></div>
+
+</section>
+
+  </main>
+
+  <!-- MODAL ESTUDIANTE -->
+<div class="modal fade" id="modalEstudiante" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNombre">Estudiante</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- TABS -->
+        <ul class="nav nav-tabs mb-3">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-info">
+              📄 Información
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-editar">
+              ✏️ Editar
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link text-danger" data-bs-toggle="tab" data-bs-target="#tab-eliminar">
+              🗑️ Eliminar
+            </button>
+          </li>
+        </ul>
+
+        <!-- CONTENIDO -->
+        <div class="tab-content">
+
+          <div class="tab-pane fade show active" id="tab-info"></div>
+
+          <div class="tab-pane fade" id="tab-editar"></div>
+
+          <div class="tab-pane fade" id="tab-eliminar"></div>
+
+        </div>
+
       </div>
 
     </div>
   </div>
 </div>
-
-      <div class="row g-3" id="contenedor-estudiantes">
-      </div>
-    </section>
-  </main>
 
 
   <!-- Botón flotante del chat -->
@@ -285,15 +348,11 @@
 
     // 🔥 IMPORTANTE
     window.db = db;
-    window.editarEstudiante = editarEstudiante;
-    window.guardarCambios = guardarCambios;
-
   </script>
 
 
 
   <!-- TU JS -->
-  <script type="module" src="static/js/script_clasi.js"></script>
 
   <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
