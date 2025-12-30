@@ -1,6 +1,6 @@
 // Configuración de usuarios válidos
 const usuariosValidos = {
-    "mauricio@comeduc.cl": "1234",
+    "mauricio@comeduc.cl": "BENJA1234",
     "user": "pass123",
     "demo": "demo"
 };
