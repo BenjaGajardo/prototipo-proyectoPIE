@@ -156,6 +156,7 @@ async function agregarEstudiante() {
     nombre: document.getElementById("nombre").value.trim(),
     curso: document.getElementById("curso").value.trim(),
     promedio: Number(document.getElementById("promedio").value),
+    telefono_pie: document.getElementById("telefono-pie").value.trim(),
 
     diagnostico_principal: document.getElementById("diagnostico").value.trim(),
     nee: document.getElementById("nee").value
@@ -174,11 +175,9 @@ async function agregarEstudiante() {
 
   alert("✅ Estudiante agregado correctamente");
 
-  /* cierra automaticamente el formulario despues de agregar estudiante
   limpiarFormularioAgregar();
   document.getElementById("form-agregar").classList.add("d-none");
   document.getElementById("btn-expandir").innerHTML = "🔽 Expandir";
-  */
 }
 
 window.agregarEstudiante = agregarEstudiante;
@@ -188,6 +187,7 @@ function limpiarFormularioAgregar() {
   document.getElementById("nombre").value = "";
   document.getElementById("curso").value = "";
   document.getElementById("promedio").value = "";
+  document.getElementById("telefono-pie").value = "";
 
   document.getElementById("diagnostico").value = "";
   document.getElementById("nee").value = "";
