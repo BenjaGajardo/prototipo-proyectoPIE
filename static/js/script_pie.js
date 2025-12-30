@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.innerHTML = `
             <div class="message received">
                 <div class="message-content">
-                    Has iniciado un nuevo chat con el ${contactName}. ¿En qué podemos colaborar hoy?
+                    Para iniciar una conversacion con el ${contactName}, escriba su duda o consulta en este chat, se le direccionara automaticamente a un chat mediante via whatsapp web.
                 </div>
             </div>
         `;

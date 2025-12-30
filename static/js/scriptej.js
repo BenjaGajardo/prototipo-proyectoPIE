@@ -1,183 +1,454 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore,
   collection,
   onSnapshot,
   doc,
-  getDoc,
   updateDoc,
+  addDoc,
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD1yw2AbKAQEnSLfwTIPV8ovvLrfUWOX-w",
-      authDomain: "adaptia-cd403.firebaseapp.com",
-      projectId: "adaptia-cd403",
-      storageBucket: "adaptia-cd403.firebasestorage.app",
-      messagingSenderId: "699771313712",
-      appId: "1:699771313712:web:afb71f5a6c67b3561617f5",
-      measurementId: "G-88XP0867G7"
-    };
+let unsuscribeModal = null;
+// ================================
+// CACHE PARA CONSULTAS
+// ================================
+let estudiantesCache = [];
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+
 
 const contenedor = document.getElementById("contenedor-estudiantes");
+let listaEstudiantes = [];
 
 
-/* LISTAR ESTUDIANTES */
-onSnapshot(collection(db, "estudiantes"), (snap) => {
+function cargarEstudiantes() {
+  const ref = collection(window.db, "estudiantes");
+
+  onSnapshot(ref, (querySnapshot) => {
+    estudiantesCache = []; // 👈 LIMPIAR CACHE
+    contenedor.innerHTML = "";
+    listaEstudiantes = []; // 🔥 reiniciamos la lista
+
+    if (querySnapshot.empty) {
+      contenedor.innerHTML = `
+        <div class="col-12">
+          <div class="alert alert-warning">
+            No hay estudiantes registrados
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    querySnapshot.forEach(docSnap => {
+        const e = docSnap.data();
+
+      estudiantesCache.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
+
+      listaEstudiantes.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
+    });
+
+    // 👇 mostramos todos al inicio
+    renderizarEstudiantes(listaEstudiantes);
+  });
+}
+
+
+function renderizarEstudiantes(estudiantes) {
   contenedor.innerHTML = "";
 
-  snap.forEach(d => {
-    const e = d.data();
+  if (estudiantes.length === 0) {
+    contenedor.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-info">
+          No se encontraron estudiantes
+        </div>
+      </div>
+    `;
+    return;
+  }
 
+  estudiantes.forEach(e => {
     const nombre = e.nombre ?? "Sin nombre";
     const curso = e.curso ?? "Sin curso";
     const promedio = e.promedio ?? "—";
-    const esPIE = e.pie === true;
+    const pie = e.pie ? "Sí" : "No";
     const telefonoPIE = e.telefono_pie?.trim() || "—";
 
     contenedor.innerHTML += `
-      <div class="col-md-4">
-        <div class="card p-3 shadow-sm h-100">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
 
-          <h6 class="fw-bold mb-1">${nombre}</h6>
+            <h6 class="fw-bold mb-1">${nombre}</h6>
+            <p class="mb-1 text-muted small">Curso: ${curso}</p>
+            <p class="mb-1 small">Promedio: ${promedio}</p>
 
-          <p class="mb-1 text-muted small">
-            📘 Curso: ${curso}
-          </p>
+            <div class="mt-2">
+              <span class="badge ${e.pie ? "bg-success" : "bg-secondary"}">
+                PIE: ${pie}
+              </span>
+            </div>
 
-          <p class="mb-1 small">
-            📊 Promedio: ${promedio}
-          </p>
+            ${e.pie ? `<p class="mt-2 small text-muted">📞 PIE: ${telefonoPIE}</p>` : ""}
 
-          <span class="badge ${esPIE ? "bg-success" : "bg-secondary"} mb-2">
-            PIE: ${esPIE ? "Sí" : "No"}
-          </span>
+            <div class="d-flex justify-content-center mt-3">
+              <button class="btn btn-primary btn-sm btn-ver-info" data-id="${e.id}">
+                Ver información
+              </button>
+            </div>
 
-          ${esPIE ? `
-            <p class="small text-muted mb-2">
-              📞 PIE: ${telefonoPIE}
-            </p>
-          ` : ""}
-
-          <div class="mt-auto text-center">
-            <button class="btn btn-primary btn-sm"
-              onclick="abrirModal('${d.id}')">
-              Ver información
-            </button>
           </div>
-
         </div>
       </div>
     `;
   });
+}
+
+
+const inputBuscador = document.getElementById("buscador-estudiantes");
+
+inputBuscador.addEventListener("input", () => {
+  const texto = inputBuscador.value.toLowerCase().trim();
+
+  const filtrados = listaEstudiantes.filter(e => {
+  const nombreCompleto = `${e.nombre ?? ""}`.toLowerCase();
+  return nombreCompleto.includes(texto);
 });
 
-/* ABRIR MODAL */
+  renderizarEstudiantes(filtrados);
+});
+
+window.cargarEstudiantes = cargarEstudiantes;
+// 👇 ESTO CARGA AUTOMÁTICAMENTE
+cargarEstudiantes();
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn-ver-info")) {
+    const id = e.target.dataset.id;
+    abrirModal(id);
+  }
+});
+
+
+function toggleAgregar() {
+  const form = document.getElementById("form-agregar");
+  const boton = document.getElementById("btn-expandir");
+
+  if (form.classList.contains("d-none")) {
+    form.classList.remove("d-none");
+    boton.innerHTML = "🔼 Contraer";
+  } else {
+    form.classList.add("d-none");
+    boton.innerHTML = "🔽 Expandir";
+  }
+}
+
+
+async function agregarEstudiante() {
+
+  await addDoc(collection(window.db, "estudiantes"), {
+    nombre: document.getElementById("nombre").value.trim(),
+    curso: document.getElementById("curso").value.trim(),
+    promedio: Number(document.getElementById("promedio").value),
+
+    diagnostico_principal: document.getElementById("diagnostico").value.trim(),
+    nee: document.getElementById("nee").value
+      .split(",")
+      .map(n => n.trim())
+      .filter(n => n !== ""),
+
+    observaciones: document.getElementById("observaciones").value.trim(),
+    fortalezas: document.getElementById("fortalezas").value.trim(),
+    observaciones_socioemocionales: document.getElementById("socio").value.trim(),
+    recomendaciones: document.getElementById("recomendaciones").value.trim(),
+    seguimiento_pie: document.getElementById("seguimiento").value.trim(),
+
+    pie: true
+  });
+
+  alert("✅ Estudiante agregado correctamente");
+
+  /* cierra automaticamente el formulario despues de agregar estudiante
+  limpiarFormularioAgregar();
+  document.getElementById("form-agregar").classList.add("d-none");
+  document.getElementById("btn-expandir").innerHTML = "🔽 Expandir";
+  */
+}
+
+window.agregarEstudiante = agregarEstudiante;
+window.toggleAgregar = toggleAgregar;
+
+function limpiarFormularioAgregar() {
+  document.getElementById("nombre").value = "";
+  document.getElementById("curso").value = "";
+  document.getElementById("promedio").value = "";
+
+  document.getElementById("diagnostico").value = "";
+  document.getElementById("nee").value = "";
+
+  document.getElementById("observaciones").value = "";
+  document.getElementById("fortalezas").value = "";
+  document.getElementById("socio").value = "";
+  document.getElementById("recomendaciones").value = "";
+  document.getElementById("seguimiento").value = "";
+}
+
+
+
+
+
 async function abrirModal(id) {
-  const ref = doc(db, "estudiantes", id);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
 
-  const e = snap.data();
+  const ref = doc(window.db, "estudiantes", id);
 
-  document.getElementById("modalNombre").innerText = e.nombre ?? "Estudiante";
+  // 🔥 cerrar listener anterior si existe
+  if (unsuscribeModal) unsuscribeModal();
 
-  /* INFO */
-  document.getElementById("info").innerHTML = `
-    <p><strong>Diagnóstico principal:</strong><br>${e.diagnostico_principal ?? "—"}</p>
-    <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ")}</p>
-    <p><strong>Observaciones:</strong><br>${e.observaciones ?? "—"}</p>
-    <p><strong>Fortalezas:</strong><br>${e.fortalezas ?? "—"}</p>
-    <p><strong>Obs. socioemocionales:</strong><br>${e.observaciones_socioemocionales ?? "—"}</p>
-    <p><strong>Recomendaciones docente:</strong><br>${e.recomendaciones ?? "—"}</p>
-    <p><strong>Seguimiento PIE:</strong><br>${e.seguimiento_pie ?? "—"}</p>
-  `;
+  unsuscribeModal = onSnapshot(ref, (snap) => {
+    if (!snap.exists()) return;
 
-  /* EDITAR */
-  document.getElementById("editar").innerHTML = `
-    ${campo("Diagnóstico principal", "diagnostico", e.diagnostico_principal)}
-    ${campo("NEE (separadas por coma)", "nee", (e.nee ?? []).join(", "))}
-    ${textarea("Observaciones", "observaciones", e.observaciones)}
-    ${textarea("Fortalezas", "fortalezas", e.fortalezas)}
-    ${textarea("Obs. socioemocionales", "socioemocionales", e.observaciones_socioemocionales)}
-    ${textarea("Recomendaciones docente", "recomendaciones", e.recomendaciones)}
-    ${textarea("Seguimiento PIE", "seguimiento", e.seguimiento_pie)}
+    const e = snap.data();
 
-    <button class="btn btn-success mt-3"
-      onclick="guardar('${id}')">
-      Guardar cambios
-    </button>
-  `;
+    document.getElementById("modalNombre").innerText =
+      e.nombre ?? "Estudiante";
 
-  /* ELIMINAR */
-document.getElementById("eliminar").innerHTML = `
-  <div class="text-center">
-    <p class="fw-bold text-danger mb-3">
-      Eliminar estudiante: ${e.nombre ?? "Estudiante"}
-    </p>
+    // TAB INFO
+    document.getElementById("tab-info").innerHTML = `
+  <p><strong>Diagnóstico:</strong><br>${e.diagnostico_principal ?? "—"}</p>
 
-    <button class="btn btn-danger px-4"
-      onclick="eliminar('${id}')">
-      🗑️ Eliminar
-    </button>
-  </div>
+  <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ") || "—"}</p>
+
+  <p><strong>Observaciones pedagógicas:</strong></p>
+  <p style="white-space:pre-line">${e.observaciones ?? "—"}</p>
+
+  <hr>
+
+  <p><strong>Fortalezas:</strong></p>
+  <p style="white-space:pre-line">${e.fortalezas ?? "—"}</p>
+
+  <p><strong>Aspectos socioemocionales:</strong></p>
+  <p style="white-space:pre-line">${e.observaciones_socioemocionales ?? "—"}</p>
+
+  <p><strong>Recomendaciones:</strong></p>
+  <p style="white-space:pre-line">${e.recomendaciones ?? "—"}</p>
+
+  <p><strong>Seguimiento PIE:</strong></p>
+  <p style="white-space:pre-line">${e.seguimiento_pie ?? "—"}</p>
 `;
 
+
+    // TAB EDITAR
+    document.getElementById("tab-editar").innerHTML = `
+  <label class="form-label">Diagnóstico</label>
+  <input class="form-control mb-2" id="edit-diagnostico" value="${e.diagnostico_principal ?? ""}">
+
+  <label class="form-label">NEE</label>
+  <input class="form-control mb-2" id="edit-nee" value="${(e.nee ?? []).join(", ")}">
+
+  <label class="form-label">Observaciones</label>
+  <textarea class="form-control mb-2" id="edit-observaciones">${e.observaciones ?? ""}</textarea>
+
+  <label class="form-label">Fortalezas</label>
+  <textarea class="form-control mb-2" id="edit-fortalezas">${e.fortalezas ?? ""}</textarea>
+
+  <label class="form-label">Aspectos socioemocionales</label>
+  <textarea class="form-control mb-2" id="edit-socio">${e.observaciones_socioemocionales ?? ""}</textarea>
+
+  <label class="form-label">Recomendaciones</label>
+  <textarea class="form-control mb-2" id="edit-recomendaciones">${e.recomendaciones ?? ""}</textarea>
+
+  <label class="form-label">Seguimiento PIE</label>
+  <textarea class="form-control mb-3" id="edit-seguimiento">${e.seguimiento_pie ?? ""}</textarea>
+
+<button
+  type="button"
+  class="btn btn-success btn-sm"
+  onclick="guardarDesdeModal('${id}')">
+  💾 Guardar cambios
+</button>
+`;
+
+    // TAB ELIMINAR
+    document.getElementById("tab-eliminar").innerHTML = `
+    <div class="alert alert-danger">
+      Esta acción no se puede deshacer.
+    </div>
+
+    <button class="btn btn-danger"
+      onclick="eliminarDesdeModal('${id}', '${e.nombre ?? "Estudiante"}')">
+      🗑️ Eliminar estudiante
+    </button>
+  `;
+  });
   new bootstrap.Modal(
     document.getElementById("modalEstudiante")
   ).show();
 }
 
+
+
+async function guardarDesdeModal(id) {
+  try {
+    await updateDoc(doc(window.db, "estudiantes", id), {
+      diagnostico_principal: document.getElementById("edit-diagnostico").value.trim(),
+      nee: document.getElementById("edit-nee").value
+        .split(",")
+        .map(n => n.trim())
+        .filter(n => n !== ""),
+      observaciones: document.getElementById("edit-observaciones").value.trim(),
+      fortalezas: document.getElementById("edit-fortalezas").value.trim(),
+      observaciones_socioemocionales: document.getElementById("edit-socio").value.trim(),
+      recomendaciones: document.getElementById("edit-recomendaciones").value.trim(),
+      seguimiento_pie: document.getElementById("edit-seguimiento").value.trim()
+    });
+
+    alert("✅ Información PIE actualizada");
+  } catch (error) {
+    console.error("❌ Error al guardar:", error);
+    alert("❌ No se pudo guardar la información");
+  }
+}
+
+
+window.guardarDesdeModal = guardarDesdeModal;
+
+
+async function eliminarDesdeModal(id, nombre) {
+
+  const ok = confirm(`¿Eliminar definitivamente a ${nombre}?`);
+  if (!ok) return;
+
+  await deleteDoc(doc(window.db, "estudiantes", id));
+
+  alert("✅ Estudiante eliminado");
+
+  const modal = window.bootstrap.Modal.getInstance(
+    document.getElementById("modalEstudiante")
+  );
+
+  if (modal) modal.hide();
+}
+
+
+window.eliminarDesdeModal = eliminarDesdeModal;
 window.abrirModal = abrirModal;
 
-/* GUARDAR */
-async function guardar(id) {
-  await updateDoc(doc(db, "estudiantes", id), {
-    diagnostico_principal: v("diagnostico"),
-    nee: v("nee").split(",").map(n => n.trim()).filter(Boolean),
-    observaciones: v("observaciones"),
-    fortalezas: v("fortalezas"),
-    observaciones_socioemocionales: v("socioemocionales"),
-    recomendaciones: v("recomendaciones"),
-    seguimiento_pie: v("seguimiento"),
+document.getElementById("modalEstudiante")
+  .addEventListener("hidden.bs.modal", () => {
+    if (unsuscribeModal) {
+      unsuscribeModal();
+      unsuscribeModal = null;
+    }
   });
 
-  alert("Datos actualizados correctamente");
-}
 
-window.guardar = guardar;
 
-/* ELIMINAR */
-async function eliminar(id) {
-  if (!confirm("¿Eliminar este estudiante?")) return;
-  await deleteDoc(doc(db, "estudiantes", id));
-  alert("Estudiante eliminado");
-}
 
-window.eliminar = eliminar;
 
-/* HELPERS */
-function v(id) {
-  return document.getElementById(id).value.trim();
-}
+// =======================================
+// CONSULTAS DE INFORMACIÓN PIE
+// =======================================
+window.consultarInformacion = function () {
 
-function campo(label, id, value = "") {
-  return `
-    <div class="mb-2">
-      <label class="form-label">${label}</label>
-      <input class="form-control" id="${id}" value="${value ?? ""}">
-    </div>
-  `;
-}
+  const campo = document.getElementById("campo-info").value;
+  const texto = document.getElementById("texto-info").value
+    .trim()
+    .toLowerCase();
 
-function textarea(label, id, value = "") {
-  return `
-    <div class="mb-2">
-      <label class="form-label">${label}</label>
-      <textarea class="form-control" id="${id}" rows="2">${value ?? ""}</textarea>
-    </div>
-  `;
-}
+  const contenedorTabla = document.getElementById("tabla-consulta-body");
+  const cardResultado = document.getElementById("resultado-consulta");
+
+  contenedorTabla.innerHTML = "";
+  cardResultado.classList.add("d-none");
+  document
+  .getElementById("card-agregar-estudiante")
+  .classList.remove("mt-4");
+
+  if (!campo || texto === "") {
+    alert("⚠️ Seleccione un campo y escriba un texto");
+    return;
+  }
+
+  const resultados = estudiantesCache.filter(e => {
+
+    const valor = e[campo];
+
+    if (!valor) return false;
+
+    // CAMPO ARRAY (NEE)
+    if (Array.isArray(valor)) {
+      return valor.join(" ").toLowerCase().includes(texto);
+    }
+
+    // CAMPO TEXTO
+    return valor.toString().toLowerCase().includes(texto);
+  });
+
+  if (resultados.length === 0) {
+    alert("❌ No se encontraron resultados");
+    return;
+  }
+
+  resultados.forEach(e => {
+
+    let info = e[campo];
+
+    if (Array.isArray(info)) {
+      info = info.join(", ");
+    }
+
+    contenedorTabla.innerHTML += `
+      <tr>
+        <td>${e.nombre ?? "—"}</td>
+        <td>${e.curso ?? "—"}</td>
+        <td>${campo.replace(/_/g, " ")}</td>
+        <td style="white-space:pre-line">${info}</td>
+      </tr>
+    `;
+  });
+
+  cardResultado.classList.remove("d-none");
+  document
+  .getElementById("card-agregar-estudiante")
+  .classList.add("mt-4");
+
+  const btn = document.getElementById("btn-consulta-info");
+btn.innerHTML = "❌ Quitar información";
+btn.classList.remove("btn-primary");
+btn.classList.add("btn-danger");
+btn.onclick = quitarConsulta;
+};
+
+// =======================================
+// QUITAR RESULTADOS DE CONSULTA
+// =======================================
+window.quitarConsulta = function () {
+
+  // ocultar tabla
+  document
+    .getElementById("resultado-consulta")
+    .classList.add("d-none");
+
+  // quitar separación
+  document
+    .getElementById("card-agregar-estudiante")
+    .classList.remove("mt-4");
+
+  // limpiar tabla
+  document.getElementById("tabla-consulta-body").innerHTML = "";
+
+  // volver botón a estado original
+  const btn = document.getElementById("btn-consulta-info");
+  btn.innerHTML = "🔍 Consultar información";
+  btn.classList.remove("btn-danger");
+  btn.classList.add("btn-primary");
+  btn.onclick = consultarInformacion;
+};
+
+
