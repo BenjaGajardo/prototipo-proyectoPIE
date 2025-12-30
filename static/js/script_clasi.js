@@ -4,21 +4,30 @@ import {
   doc,
   updateDoc,
   addDoc,
-  deleteDoc
+  deleteDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 let unsuscribeModal = null;
+// ================================
+// CACHE PARA CONSULTAS
+// ================================
+let estudiantesCache = [];
+
 
 
 
 const contenedor = document.getElementById("contenedor-estudiantes");
+let listaEstudiantes = [];
+
 
 function cargarEstudiantes() {
   const ref = collection(window.db, "estudiantes");
 
   onSnapshot(ref, (querySnapshot) => {
-    console.log("🔥 SNAPSHOT ACTUALIZADO");
+    estudiantesCache = []; // 👈 LIMPIAR CACHE
     contenedor.innerHTML = "";
+    listaEstudiantes = []; // 🔥 reiniciamos la lista
 
     if (querySnapshot.empty) {
       contenedor.innerHTML = `
@@ -34,49 +43,162 @@ function cargarEstudiantes() {
     querySnapshot.forEach(docSnap => {
       const e = docSnap.data();
 
-      const nombre = e.nombre ?? "Sin nombre";
-      const curso = e.curso ?? "Sin curso";
-      const promedio = e.promedio ?? "—";
-      const pie = e.pie ? "Sí" : "No";
-      const telefonoPIE = e.telefono_pie?.trim() || "—";
+      estudiantesCache.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
 
-      contenedor.innerHTML += `
-  <div class="col-12 col-md-6 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-
-        <h6 class="fw-bold mb-1">${nombre}</h6>
-        <p class="mb-1 text-muted small">Curso: ${curso}</p>
-        <p class="mb-1 small">Promedio: ${promedio}</p>
-
-        <div class="mt-2">
-          <span class="badge ${e.pie ? "bg-success" : "bg-secondary"}">
-            PIE: ${pie}
-          </span>
-        </div>
-
-        ${e.pie
-          ? `<p class="mt-2 small text-muted">
-                📞 PIE: ${telefonoPIE}
-                </p>`
-          : ""
-        }
-
-        <div class="d-flex justify-content-center mt-3">
-<button class="btn btn-primary btn-sm btn-ver-info"
-  data-id="${docSnap.id}">
-  Ver información
-</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-`;
-
+      listaEstudiantes.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
     });
+
+    // 👇 mostramos todos al inicio
+    renderizarEstudiantes(listaEstudiantes);
   });
 }
+
+
+function renderizarEstudiantes(estudiantes) {
+  contenedor.innerHTML = "";
+
+  if (estudiantes.length === 0) {
+    contenedor.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-info">
+          No se encontraron estudiantes
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  estudiantes.forEach(e => {
+    const nombre = e.nombre ?? "Sin nombre";
+    const curso = e.curso ?? "Sin curso";
+    const promedio = e.promedio ?? "—";
+    const pie = e.pie ? "Sí" : "No";
+    const telefonoPIE = e.telefono_pie?.trim() || "—";
+
+    contenedor.innerHTML += `
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+
+            <h6 class="fw-bold mb-1">${nombre}</h6>
+            <p class="mb-1 text-muted small">Curso: ${curso}</p>
+            <p class="mb-1 small">Promedio: ${promedio}</p>
+
+            <div class="mt-2">
+              <span class="badge ${e.pie ? "bg-success" : "bg-secondary"}">
+                PIE: ${pie}
+              </span>
+            </div>
+
+            ${e.pie ? `<p class="mt-2 small text-muted">📞 PIE: ${telefonoPIE}</p>` : ""}
+
+            <div class="d-flex justify-content-center mt-3">
+              <button class="btn btn-primary btn-sm btn-ver-info" data-id="${e.id}">
+                Ver información
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+
+const inputBuscador = document.getElementById("buscador-estudiantes");
+const selectNivel = document.getElementById("filtro-nivel");
+const selectLetra = document.getElementById("filtro-letra");
+
+// 👇 oculto al inicio
+selectLetra.style.display = "none";
+
+
+function aplicarFiltrosPrincipales() {
+
+  // 👇 SI AÚN NO HAY DATOS, mostrar todo
+  if (listaEstudiantes.length === 0) {
+    renderizarEstudiantes(listaEstudiantes);
+    return;
+  }
+
+  const texto = inputBuscador.value.toLowerCase().trim();
+  const nivel = selectNivel.value.toLowerCase();
+  const letra = selectLetra.value.toLowerCase();
+
+  const filtrados = listaEstudiantes.filter(e => {
+
+    const nombre = (e.nombre ?? "").toLowerCase();
+    const curso = (e.curso ?? "").toLowerCase();
+
+    // 🔍 filtro por nombre
+    if (texto && !nombre.includes(texto)) return false;
+
+    // 🎓 filtro por nivel (más flexible)
+    if (nivel && !curso.includes(nivel)) return false;
+
+    // 🔤 filtro por letra
+    if (letra && !curso.endsWith(` ${letra}`)) return false;
+
+
+    return true;
+  });
+
+  renderizarEstudiantes(filtrados);
+}
+
+
+inputBuscador.addEventListener("input", aplicarFiltrosPrincipales);
+selectNivel.addEventListener("change", actualizarFiltroLetra);
+selectLetra.addEventListener("change", aplicarFiltrosPrincipales);
+
+
+
+function actualizarFiltroLetra() {
+  const nivel = selectNivel.value;
+
+  // limpiar letras
+  selectLetra.innerHTML = "";
+
+  // ❌ sin nivel → ocultar y deshabilitar
+  if (!nivel) {
+    selectLetra.style.display = "none";
+    selectLetra.disabled = true;
+    selectLetra.value = "";
+    aplicarFiltrosPrincipales();
+    return;
+  }
+
+  // ✅ con nivel → mostrar y habilitar
+  selectLetra.style.display = "block";
+  selectLetra.disabled = false;
+
+  // opción "todas"
+  const optionTodas = document.createElement("option");
+  optionTodas.value = "";
+  optionTodas.textContent = "Todas las letras";
+  selectLetra.appendChild(optionTodas);
+
+  // letras
+  ["A", "B", "C", "D"].forEach(letra => {
+    const option = document.createElement("option");
+    option.value = letra;
+    option.textContent = letra;
+    selectLetra.appendChild(option);
+  });
+
+  aplicarFiltrosPrincipales();
+}
+
+
+
+
 
 window.cargarEstudiantes = cargarEstudiantes;
 // 👇 ESTO CARGA AUTOMÁTICAMENTE
@@ -88,53 +210,6 @@ document.addEventListener("click", (e) => {
     abrirModal(id);
   }
 });
-
-
-async function guardarCambios(id) {
-
-  const ref = doc(window.db, "estudiantes", id);
-
-  await updateDoc(ref, {
-    diagnostico_principal: document.getElementById(`diagnostico-${id}`).value.trim(),
-    nee: document.getElementById(`nee-${id}`).value
-      .split(",")
-      .map(n => n.trim())
-      .filter(n => n !== ""),
-    observaciones: document.getElementById(`observaciones-${id}`).value.trim(),
-    fortalezas: document.getElementById(`fortalezas-${id}`).value.trim(),
-    observaciones_socioemocionales: document.getElementById(`socio-${id}`).value.trim(),
-    recomendaciones: document.getElementById(`recomendaciones-${id}`).value.trim(),
-    seguimiento_pie: document.getElementById(`seguimiento-${id}`).value.trim(),
-    nombre: document.getElementById("edit-nombre").value.trim(),
-    curso: document.getElementById("edit-curso").value.trim(),
-    promedio: document.getElementById("edit-promedio").value.trim(),
-    telefono_pie: document.getElementById("edit-telefono-pie").value.trim()
-  });
-
-  alert("✅ Información PIE actualizada");
-}
-
-window.guardarCambios = guardarCambios;
-
-
-
-async function eliminarEstudiante(id, nombre) {
-  const confirmar = confirm(
-    `⚠️ ¿Seguro que deseas eliminar al estudiante:\n\n${nombre}?\n\nEsta acción no se puede deshacer.`
-  );
-
-  if (!confirmar) return;
-
-  try {
-    await deleteDoc(doc(window.db, "estudiantes", id));
-    alert("✅ Estudiante eliminado correctamente");
-  } catch (error) {
-    console.error(error);
-    alert("❌ Error al eliminar estudiante");
-  }
-}
-
-window.eliminarEstudiante = eliminarEstudiante;
 
 
 function toggleAgregar() {
@@ -154,33 +229,61 @@ function toggleAgregar() {
 async function agregarEstudiante() {
 
   await addDoc(collection(window.db, "estudiantes"), {
+    nombre: document.getElementById("nombre").value.trim(),
+    curso: document.getElementById("curso").value.trim(),
+    promedio: Number(document.getElementById("promedio").value),
+    telefono_pie: document.getElementById("telefono-pie").value.trim(),
+
     diagnostico_principal: document.getElementById("diagnostico").value.trim(),
     nee: document.getElementById("nee").value
       .split(",")
       .map(n => n.trim())
       .filter(n => n !== ""),
-    observaciones: document.getElementById("observaciones").value.trim(),
-    adecuaciones: document.getElementById("adecuaciones").value.trim(),
 
-    // 👇 NUEVOS CAMPOS STRING
+    observaciones: document.getElementById("observaciones").value.trim(),
     fortalezas: document.getElementById("fortalezas").value.trim(),
     observaciones_socioemocionales: document.getElementById("socio").value.trim(),
     recomendaciones: document.getElementById("recomendaciones").value.trim(),
     seguimiento_pie: document.getElementById("seguimiento").value.trim(),
 
-    pie: true
+    pie: true,
+
+    // ⏱ FECHAS
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
   });
 
   alert("✅ Estudiante agregado correctamente");
+
+  limpiarFormularioAgregar();
+  document.getElementById("form-agregar").classList.add("d-none");
+  document.getElementById("btn-expandir").innerHTML = "🔽 Expandir";
+}
+
+window.agregarEstudiante = agregarEstudiante;
+window.toggleAgregar = toggleAgregar;
+
+function limpiarFormularioAgregar() {
+  document.getElementById("nombre").value = "";
+  document.getElementById("curso").value = "";
+  document.getElementById("promedio").value = "";
+  document.getElementById("telefono-pie").value = "";
+
+  document.getElementById("diagnostico").value = "";
+  document.getElementById("nee").value = "";
+
+  document.getElementById("observaciones").value = "";
+  document.getElementById("fortalezas").value = "";
+  document.getElementById("socio").value = "";
+  document.getElementById("recomendaciones").value = "";
+  document.getElementById("seguimiento").value = "";
 }
 
 
-
-
-
-window.toggleAgregar = toggleAgregar;
-
-
+function formatearFecha(ts) {
+  if (!ts) return "—";
+  return ts.toDate().toLocaleString("es-CL");
+}
 
 async function abrirModal(id) {
 
@@ -199,6 +302,15 @@ async function abrirModal(id) {
 
     // TAB INFO
     document.getElementById("tab-info").innerHTML = `
+  <p><strong>Fecha de creación:</strong><br>
+    ${formatearFecha(e.createdAt)}
+  </p>
+
+  <p><strong>Última edición:</strong><br>
+    ${formatearFecha(e.updatedAt)}
+  </p>
+
+
   <p><strong>Diagnóstico:</strong><br>${e.diagnostico_principal ?? "—"}</p>
 
   <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ") || "—"}</p>
@@ -245,9 +357,12 @@ async function abrirModal(id) {
   <label class="form-label">Seguimiento PIE</label>
   <textarea class="form-control mb-3" id="edit-seguimiento">${e.seguimiento_pie ?? ""}</textarea>
 
-  <button class="btn btn-success btn-sm" onclick="guardarDesdeModal('${id}')">
-    💾 Guardar cambios
-  </button>
+<button
+  type="button"
+  class="btn btn-success btn-sm"
+  onclick="guardarDesdeModal('${id}')">
+  💾 Guardar cambios
+</button>
 `;
 
     // TAB ELIMINAR
@@ -270,27 +385,28 @@ async function abrirModal(id) {
 
 
 async function guardarDesdeModal(id) {
+  try {
+    await updateDoc(doc(window.db, "estudiantes", id), {
+      diagnostico_principal: document.getElementById("edit-diagnostico").value.trim(),
+      nee: document.getElementById("edit-nee").value
+        .split(",")
+        .map(n => n.trim())
+        .filter(n => n !== ""),
+      observaciones: document.getElementById("edit-observaciones").value.trim(),
+      fortalezas: document.getElementById("edit-fortalezas").value.trim(),
+      observaciones_socioemocionales: document.getElementById("edit-socio").value.trim(),
+      recomendaciones: document.getElementById("edit-recomendaciones").value.trim(),
+      seguimiento_pie: document.getElementById("edit-seguimiento").value.trim(),
 
-  await updateDoc(doc(window.db, "estudiantes", id), {
-    diagnostico_principal: document.getElementById("edit-diagnostico").value.trim(),
-    nee: document.getElementById("edit-nee").value
-      .split(",")
-      .map(n => n.trim())
-      .filter(n => n !== ""),
-    observaciones: document.getElementById("edit-observaciones").value.trim(),
+      // ⏱ FECHA DE EDICIÓN
+      updatedAt: serverTimestamp()
+    });
 
-    // 👇 NUEVOS STRINGS
-    fortalezas: document.getElementById("edit-fortalezas").value.trim(),
-    observaciones_socioemocionales: document.getElementById("edit-socio").value.trim(),
-    recomendaciones: document.getElementById("edit-recomendaciones").value.trim(),
-    seguimiento_pie: document.getElementById("edit-seguimiento").value.trim(),
-    nombre: document.getElementById("edit-nombre").value.trim(),
-    curso: document.getElementById("edit-curso").value.trim(),
-    promedio: document.getElementById("edit-promedio").value.trim(),
-    telefono_pie: document.getElementById("edit-telefono-pie").value.trim()
-  });
-
-  alert("✅ Información PIE actualizada");
+    alert("✅ Información PIE actualizada");
+  } catch (error) {
+    console.error("❌ Error al guardar:", error);
+    alert("❌ No se pudo guardar la información");
+  }
 }
 
 
@@ -324,3 +440,109 @@ document.getElementById("modalEstudiante")
       unsuscribeModal = null;
     }
   });
+
+
+
+
+
+// =======================================
+// CONSULTAS DE INFORMACIÓN PIE
+// =======================================
+window.consultarInformacion = function () {
+
+  const campo = document.getElementById("campo-info").value;
+  const texto = document.getElementById("texto-info").value
+    .trim()
+    .toLowerCase();
+
+  const contenedorTabla = document.getElementById("tabla-consulta-body");
+  const cardResultado = document.getElementById("resultado-consulta");
+
+  contenedorTabla.innerHTML = "";
+  cardResultado.classList.add("d-none");
+  document
+    .getElementById("card-agregar-estudiante")
+    .classList.remove("mt-4");
+
+  if (!campo || texto === "") {
+    alert("⚠️ Seleccione un campo y escriba un texto");
+    return;
+  }
+
+  const resultados = estudiantesCache.filter(e => {
+
+    const valor = e[campo];
+
+    if (!valor) return false;
+
+    // CAMPO ARRAY (NEE)
+    if (Array.isArray(valor)) {
+      return valor.join(" ").toLowerCase().includes(texto);
+    }
+
+    // CAMPO TEXTO
+    return valor.toString().toLowerCase().includes(texto);
+  });
+
+  if (resultados.length === 0) {
+    alert("❌ No se encontraron resultados");
+    return;
+  }
+
+  resultados.forEach(e => {
+
+    let info = e[campo];
+
+    if (Array.isArray(info)) {
+      info = info.join(", ");
+    }
+
+    contenedorTabla.innerHTML += `
+      <tr>
+        <td>${e.nombre ?? "—"}</td>
+        <td>${e.curso ?? "—"}</td>
+        <td>${campo.replace(/_/g, " ")}</td>
+        <td style="white-space:pre-line">${info}</td>
+      </tr>
+    `;
+  });
+
+  cardResultado.classList.remove("d-none");
+  document
+    .getElementById("card-agregar-estudiante")
+    .classList.add("mt-4");
+
+  const btn = document.getElementById("btn-consulta-info");
+  btn.innerHTML = "❌ Quitar información";
+  btn.classList.remove("btn-primary");
+  btn.classList.add("btn-danger");
+  btn.onclick = quitarConsulta;
+};
+
+// =======================================
+// QUITAR RESULTADOS DE CONSULTA
+// =======================================
+window.quitarConsulta = function () {
+
+  // ocultar tabla
+  document
+    .getElementById("resultado-consulta")
+    .classList.add("d-none");
+
+  // quitar separación
+  document
+    .getElementById("card-agregar-estudiante")
+    .classList.remove("mt-4");
+
+  // limpiar tabla
+  document.getElementById("tabla-consulta-body").innerHTML = "";
+
+  // volver botón a estado original
+  const btn = document.getElementById("btn-consulta-info");
+  btn.innerHTML = "🔍 Consultar información";
+  btn.classList.remove("btn-danger");
+  btn.classList.add("btn-primary");
+  btn.onclick = consultarInformacion;
+};
+
+

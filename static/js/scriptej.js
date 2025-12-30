@@ -4,7 +4,8 @@ import {
   doc,
   updateDoc,
   addDoc,
-  deleteDoc
+  deleteDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 let unsuscribeModal = null;
@@ -40,7 +41,7 @@ function cargarEstudiantes() {
     }
 
     querySnapshot.forEach(docSnap => {
-        const e = docSnap.data();
+      const e = docSnap.data();
 
       estudiantesCache.push({
         id: docSnap.id,
@@ -112,17 +113,92 @@ function renderizarEstudiantes(estudiantes) {
 
 
 const inputBuscador = document.getElementById("buscador-estudiantes");
+const selectNivel = document.getElementById("filtro-nivel");
+const selectLetra = document.getElementById("filtro-letra");
 
-inputBuscador.addEventListener("input", () => {
+// 👇 oculto al inicio
+selectLetra.style.display = "none";
+
+
+function aplicarFiltrosPrincipales() {
+
+  // 👇 SI AÚN NO HAY DATOS, mostrar todo
+  if (listaEstudiantes.length === 0) {
+    renderizarEstudiantes(listaEstudiantes);
+    return;
+  }
+
   const texto = inputBuscador.value.toLowerCase().trim();
+  const nivel = selectNivel.value.toLowerCase();
+  const letra = selectLetra.value.toLowerCase();
 
   const filtrados = listaEstudiantes.filter(e => {
-  const nombreCompleto = `${e.nombre ?? ""}`.toLowerCase();
-  return nombreCompleto.includes(texto);
-});
+
+    const nombre = (e.nombre ?? "").toLowerCase();
+    const curso = (e.curso ?? "").toLowerCase();
+
+    // 🔍 filtro por nombre
+    if (texto && !nombre.includes(texto)) return false;
+
+    // 🎓 filtro por nivel (más flexible)
+    if (nivel && !curso.includes(nivel)) return false;
+
+    // 🔤 filtro por letra
+    if (letra && !curso.endsWith(` ${letra}`)) return false;
+
+
+    return true;
+  });
 
   renderizarEstudiantes(filtrados);
-});
+}
+
+
+inputBuscador.addEventListener("input", aplicarFiltrosPrincipales);
+selectNivel.addEventListener("change", actualizarFiltroLetra);
+selectLetra.addEventListener("change", aplicarFiltrosPrincipales);
+
+
+
+function actualizarFiltroLetra() {
+  const nivel = selectNivel.value;
+
+  // limpiar letras
+  selectLetra.innerHTML = "";
+
+  // ❌ sin nivel → ocultar y deshabilitar
+  if (!nivel) {
+    selectLetra.style.display = "none";
+    selectLetra.disabled = true;
+    selectLetra.value = "";
+    aplicarFiltrosPrincipales();
+    return;
+  }
+
+  // ✅ con nivel → mostrar y habilitar
+  selectLetra.style.display = "block";
+  selectLetra.disabled = false;
+
+  // opción "todas"
+  const optionTodas = document.createElement("option");
+  optionTodas.value = "";
+  optionTodas.textContent = "Todas las letras";
+  selectLetra.appendChild(optionTodas);
+
+  // letras
+  ["A", "B", "C", "D"].forEach(letra => {
+    const option = document.createElement("option");
+    option.value = letra;
+    option.textContent = letra;
+    selectLetra.appendChild(option);
+  });
+
+  aplicarFiltrosPrincipales();
+}
+
+
+
+
 
 window.cargarEstudiantes = cargarEstudiantes;
 // 👇 ESTO CARGA AUTOMÁTICAMENTE
@@ -170,7 +246,11 @@ async function agregarEstudiante() {
     recomendaciones: document.getElementById("recomendaciones").value.trim(),
     seguimiento_pie: document.getElementById("seguimiento").value.trim(),
 
-    pie: true
+    pie: true,
+
+    // ⏱ FECHAS
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
   });
 
   alert("✅ Estudiante agregado correctamente");
@@ -200,8 +280,10 @@ function limpiarFormularioAgregar() {
 }
 
 
-
-
+function formatearFecha(ts) {
+  if (!ts) return "—";
+  return ts.toDate().toLocaleString("es-CL");
+}
 
 async function abrirModal(id) {
 
@@ -220,6 +302,15 @@ async function abrirModal(id) {
 
     // TAB INFO
     document.getElementById("tab-info").innerHTML = `
+  <p><strong>Fecha de creación:</strong><br>
+    ${formatearFecha(e.createdAt)}
+  </p>
+
+  <p><strong>Última edición:</strong><br>
+    ${formatearFecha(e.updatedAt)}
+  </p>
+
+
   <p><strong>Diagnóstico:</strong><br>${e.diagnostico_principal ?? "—"}</p>
 
   <p><strong>NEE:</strong><br>${(e.nee ?? []).join(", ") || "—"}</p>
@@ -305,7 +396,10 @@ async function guardarDesdeModal(id) {
       fortalezas: document.getElementById("edit-fortalezas").value.trim(),
       observaciones_socioemocionales: document.getElementById("edit-socio").value.trim(),
       recomendaciones: document.getElementById("edit-recomendaciones").value.trim(),
-      seguimiento_pie: document.getElementById("edit-seguimiento").value.trim()
+      seguimiento_pie: document.getElementById("edit-seguimiento").value.trim(),
+
+      // ⏱ FECHA DE EDICIÓN
+      updatedAt: serverTimestamp()
     });
 
     alert("✅ Información PIE actualizada");
@@ -367,8 +461,8 @@ window.consultarInformacion = function () {
   contenedorTabla.innerHTML = "";
   cardResultado.classList.add("d-none");
   document
-  .getElementById("card-agregar-estudiante")
-  .classList.remove("mt-4");
+    .getElementById("card-agregar-estudiante")
+    .classList.remove("mt-4");
 
   if (!campo || texto === "") {
     alert("⚠️ Seleccione un campo y escriba un texto");
@@ -415,14 +509,14 @@ window.consultarInformacion = function () {
 
   cardResultado.classList.remove("d-none");
   document
-  .getElementById("card-agregar-estudiante")
-  .classList.add("mt-4");
+    .getElementById("card-agregar-estudiante")
+    .classList.add("mt-4");
 
   const btn = document.getElementById("btn-consulta-info");
-btn.innerHTML = "❌ Quitar información";
-btn.classList.remove("btn-primary");
-btn.classList.add("btn-danger");
-btn.onclick = quitarConsulta;
+  btn.innerHTML = "❌ Quitar información";
+  btn.classList.remove("btn-primary");
+  btn.classList.add("btn-danger");
+  btn.onclick = quitarConsulta;
 };
 
 // =======================================
