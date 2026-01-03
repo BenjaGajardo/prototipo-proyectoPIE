@@ -26,8 +26,8 @@ main.container {
 }
 
 .navbar-nav .nav-link {
-  font-size: 0.98rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 400;
   letter-spacing: 0.02em;
   color: #0f172a !important;
   padding-inline: 0.75rem;
@@ -42,7 +42,6 @@ main.container {
   padding: 0.6rem 1.6rem;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.95rem;
   background: linear-gradient(135deg, #2f5bcc, #40b1cc);
   border: none;
   box-shadow: 0 10px 25px rgba(64, 177, 204, 0.45);

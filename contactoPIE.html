@@ -135,37 +135,38 @@
         </section>
     </main>
 
-<!-- Botón flotante del chat -->
-    <button id="chat-button" onclick="toggleChat()"> <!-- Boton flotante que abre y cierra el chat -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
-    </svg>
+<!-- Botón flotante -->
+    <button id="chat-button" onclick="toggleChat()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+        </svg>
     </button>
 
-
-    <!-- Contenedor del chat -->
-    <div id="chat-container"> <!-- Contiene mensajes, encabezado, input del texto -->
+    <!-- Container del chat -->
+    <div id="chat-container">
         <!-- Header -->
-        <div class="chat-header">
-            <div>
-                <h4>Atlas</h4>
-                <small>Estamos aquí para ayudarte</small>
+        <div id="chat-header">
+            <div id="chat-header-content">
+                <div class="avatar">👋</div>
+                <div class="info">
+                    <h3>Atlas</h3>
+                    <p>Asistente de InclusIA</p>
+                </div>
             </div>
-            <button class="close-btn" onclick="toggleChat()">✕</button>
+            <button id="close-chat" onclick="toggleChat()">×</button>
         </div>
 
         <!-- Mensajes -->
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                <div class="message-content">
-                    ¡Hola! 👋 Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?
-                </div>
+        <div id="chat-messages">
+            <div class="welcome-message">
+                <h4>¡Hola! 👋</h4>
+                <p>Soy Atlas, el asistente de InclusIA. ¿En qué puedo ayudarte hoy?</p>
             </div>
         </div>
 
         <!-- Indicador de escritura -->
-        <div class="message bot" style="margin-left: 15px;">
-            <div class="typing-indicator" id="typingIndicator">
+        <div id="typing-indicator">
+            <div class="typing-dots">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -173,20 +174,20 @@
         </div>
 
         <!-- Input -->
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Escribe tu mensaje..."
-                onkeypress="if(event.key === 'Enter') sendMessage()" />
-            <!-- Permite enviar mensaje presionando enter -->
-            <button class="send-btn" onclick="sendMessage()" id="sendBtn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+        <div id="chat-input-area">
+            <input 
+                type="text" 
+                id="chat-input" 
+                placeholder="Escribe tu mensaje..."
+                onkeypress="handleKeyPress(event)"
+            >
+            <button id="send-button" onclick="sendMessage()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                 </svg>
             </button>
         </div>
     </div>
-
-
-
 <script>
 const inputMensaje = document.getElementById("message-input");
 const botonEnviar = document.getElementById("send-button");

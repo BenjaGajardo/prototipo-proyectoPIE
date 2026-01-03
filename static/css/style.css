@@ -127,8 +127,10 @@ body {
 
 .main-menu nav ul li a {
     text-decoration: none;
-    color: #333;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #0f172a;
     display: block;
     padding: 15px 0;
     transition: color 0.3s;
@@ -136,6 +138,7 @@ body {
 
 .main-menu nav ul li.active a {
     color: #2f5bcc;
+    font-weight: 600;
 }
 
 /* Color para el elemento activo */
@@ -838,3 +841,4 @@ body {
 html {
     scroll-behavior: smooth;
 }
+
