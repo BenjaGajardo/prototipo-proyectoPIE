@@ -19,6 +19,8 @@ let estudiantesCache = [];
 
 const contenedor = document.getElementById("contenedor-estudiantes");
 let listaEstudiantes = [];
+let listaNavbar = [];
+
 
 
 function cargarEstudiantes() {
@@ -55,6 +57,7 @@ function cargarEstudiantes() {
     });
 
     // 👇 mostramos todos al inicio
+    listaNavbar = [...listaEstudiantes];
     renderizarEstudiantes(listaEstudiantes);
   });
 }
@@ -111,6 +114,15 @@ function renderizarEstudiantes(estudiantes) {
   });
 }
 
+const nivelesBasica = [
+  "1° Básico", "2° Básico", "3° Básico", "4° Básico",
+  "5° Básico", "6° Básico", "7° Básico", "8° Básico"
+];
+
+const nivelesMedia = [
+  "1° Medio", "2° Medio", "3° Medio", "4° Medio"
+];
+
 
 const inputBuscador = document.getElementById("buscador-estudiantes");
 const selectNivel = document.getElementById("filtro-nivel");
@@ -132,7 +144,7 @@ function aplicarFiltrosPrincipales() {
   const nivel = selectNivel.value.toLowerCase();
   const letra = selectLetra.value.toLowerCase();
 
-  const filtrados = listaEstudiantes.filter(e => {
+const filtrados = listaNavbar.filter(e => {
 
     const nombre = (e.nombre ?? "").toLowerCase();
     const curso = (e.curso ?? "").toLowerCase();
@@ -197,7 +209,33 @@ function actualizarFiltroLetra() {
 }
 
 
+function actualizarSelectNivel(tipo) {
+  selectNivel.innerHTML = "";
 
+  // opción por defecto
+  const optionTodos = document.createElement("option");
+  optionTodos.value = "";
+  optionTodos.textContent = "Todos los niveles";
+  selectNivel.appendChild(optionTodos);
+
+  let niveles = [];
+
+  if (tipo === "basica") niveles = nivelesBasica;
+  if (tipo === "media") niveles = nivelesMedia;
+  if (tipo === "todos") niveles = [...nivelesBasica, ...nivelesMedia];
+
+  niveles.forEach(nivel => {
+    const option = document.createElement("option");
+    option.value = nivel;
+    option.textContent = nivel;
+    selectNivel.appendChild(option);
+  });
+
+  // resetear letra
+  selectLetra.value = "";
+  selectLetra.style.display = "none";
+  selectLetra.disabled = true;
+}
 
 
 window.cargarEstudiantes = cargarEstudiantes;
@@ -543,6 +581,37 @@ window.quitarConsulta = function () {
   btn.classList.remove("btn-danger");
   btn.classList.add("btn-primary");
   btn.onclick = consultarInformacion;
+};
+
+
+window.filtrarNavbar = function (tipo) {
+
+  if (!listaEstudiantes.length) return;
+
+  // 🔄 actualizar select de nivel
+  actualizarSelectNivel(tipo);
+
+  if (tipo === "todos") {
+    listaNavbar = [...listaEstudiantes];
+    aplicarFiltrosPrincipales();
+    return;
+  }
+
+  listaNavbar = listaEstudiantes.filter(e => {
+    const curso = (e.curso ?? "").toLowerCase();
+
+    if (tipo === "basica") {
+      return curso.includes("básico") || curso.includes("basico");
+    }
+
+    if (tipo === "media") {
+      return curso.includes("medio");
+    }
+
+    return true;
+  });
+
+  aplicarFiltrosPrincipales();
 };
 
 
