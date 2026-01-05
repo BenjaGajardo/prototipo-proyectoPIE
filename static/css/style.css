@@ -1,6 +1,6 @@
 /* --- Globales y Resets (Si no los tienes, agrégalos) --- */
 body {
-    padding-top: 70px;
+    padding-top: 110px; /*estaba a 70*/
     margin: 0;
     font-family: 'Poppins', sans-serif;
     /* Usando Poppins como ejemplo */
@@ -58,6 +58,54 @@ body {
 /* Ajuste de columnas */
 .g-4 {
     gap: 1.5rem;
+}
+
+/*Boton log out*/
+
+.logout {
+  font-size: 14px;     
+  letter-spacing: 1px;     
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  padding: 0.4em 1.2em;      
+  border: 2px solid #0066c5; 
+  border-radius: 8px;        
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1);
+  color: #0066c5;
+  text-decoration: none;
+  transition: 0.3s ease all;
+  z-index: 1;
+}
+
+.logout:before {
+  transition: 0.5s all ease;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  bottom: 0;
+  opacity: 0;
+  content: '';
+  background-color: #0066c5;
+  z-index: -1;
+}
+
+.logout:hover, .logout:focus {
+  color: white;
+}
+
+.logout:hover:before, .logout:focus:before {
+  transition: 0.5s all ease;
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+.logout:active {
+  transform: scale(0.9);
 }
 
 /* Espaciado entre elementos en un grid */
@@ -814,7 +862,7 @@ body {
 }
 
 .nav-item {
-    margin-left: 10vh;
+    margin-left: 0;
 }
 
 .navbar-nav .btn {
@@ -842,3 +890,41 @@ html {
     scroll-behavior: smooth;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===============================
+   NAVBAR BOOTSTRAP UNIFICADO
+================================ */
+
+.navbar,
+.navbar * {
+    font-family: 'Poppins', sans-serif;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    color: #0f172a !important;
+    padding: 0.5rem 0.75rem;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #2f5bcc !important;
+}
+
+.navbar-nav .nav-link.active {
+    font-weight: 600;
+}

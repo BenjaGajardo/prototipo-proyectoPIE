@@ -615,3 +615,66 @@ window.filtrarNavbar = function (tipo) {
 };
 
 
+// Reemplaza todo el <script type="module"> de Firebase con este código
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Configuración de Firebase (ya la tienes correcta)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1yw2AbKAQEnSLfwTIPV8ovvLrfUWOX-w",
+            authDomain: "adaptia-cd403.firebaseapp.com",
+            projectId: "adaptia-cd403",
+            storageBucket: "adaptia-cd403.firebasestorage.app",
+            messagingSenderId: "699771313712",
+            appId: "1:699771313712:web:afb71f5a6c67b3561617f5",
+            measurementId: "G-88XP0867G7"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Evitar volver al login con el botón atrás si ya hay sesión
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        // Verificar autenticación en tiempo real
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // NO HAY SESIÓN - Redirigir al login inmediatamente
+                console.log("No hay sesión activa, redirigiendo al login...");
+                window.location.href = "index.html";
+            } else {
+                //  HAY SESIÓN ACTIVA
+                console.log("Sesión activa:", user.email);
+
+                // Mostrar email en el navbar
+                if (userEmailNav) {
+                    userEmailNav.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+                }
+            }
+        });
+
+        // Función global para cerrar sesión
+        window.logout = async function () {
+            const confirmLogout = confirm("¿Estás seguro que deseas cerrar sesión?");
+
+            if (confirmLogout) {
+                try {
+                    console.log("Cerrando sesión...");
+
+                    // Cerrar sesión en Firebase
+                    await signOut(auth);
+
+                    // onAuthStateChanged detectará automáticamente el cambio
+                    // y redirigirá al login
+                    console.log("Sesión cerrada exitosamente");
+
+                } catch (error) {
+                    console.error("Error al cerrar sesión:", error);
+                    alert("Error al cerrar sesión. Por favor intenta nuevamente.");
+                }
+            }
+        }

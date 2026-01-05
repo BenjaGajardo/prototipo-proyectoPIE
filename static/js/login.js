@@ -1,11 +1,22 @@
-// Configuración de usuarios válidos
-const usuariosValidos = {
-    "mauricio@comeduc.cl": "BENJA1234",
-    "user": "pass123",
-    "demo": "demo"
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+// ⚠️ REEMPLAZA ESTOS VALORES CON LOS DE TU PROYECTO FIREBASE
+const firebaseConfig = {
+    apiKey: "AIzaSyD1yw2AbKAQEnSLfwTIPV8ovvLrfUWOX-w",
+    authDomain: "adaptia-cd403.firebaseapp.com",
+    projectId: "adaptia-cd403",
+    storageBucket: "adaptia-cd403.firebasestorage.app",
+    messagingSenderId: "699771313712",
+    appId: "1:699771313712:web:afb71f5a6c67b3561617f5",
+    measurementId: "G-88XP0867G7"
 };
 
-// Referencias a elementos
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Referencias a elementos del DOM
 const form = document.getElementById("loginForm");
 const submitBtn = document.getElementById("submitBtn");
 const usuarioInput = document.getElementById("usuario");
@@ -13,46 +24,26 @@ const passwordInput = document.getElementById("password");
 const errorMsg = document.getElementById("error");
 const loader = document.getElementById("loginLoader");
 
-function login(event) {
+// Evitar volver al login con el botón atrás
+window.history.pushState(null, "", window.location.href);
+window.onpopstate = function () {
+    window.history.pushState(null, "", window.location.href);
+};
+
+// Verificar si ya hay sesión activa al cargar la página
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Usuario ya autenticado, redirigir a inicio directamente
+        console.log("Sesión activa detectada, redirigiendo...");
+        window.location.href = "inicio.html";
+    }
+});
+
+// Función principal de login con Firebase
+async function login(event) {
     if (event) event.preventDefault();
 
-    const usuario = usuarioInput.value.trim();
-    const password = passwordInput.value;
-
-    errorMsg.textContent = "";
-    errorMsg.style.opacity = "0";
-
-    if (!usuario || !password) {
-        mostrarError("Por favor, completa todos los campos");
-        return;
-    }
-
-    if (usuariosValidos[usuario] && usuariosValidos[usuario] === password) {
-
-    
-        localStorage.setItem("sesion", JSON.stringify({
-            usuario: usuario,
-            timestamp: Date.now()
-        }));
-
-        mostrarLoader();
-
-        setTimeout(() => {
-            window.location.href = "inicio.html";
-        }, 2000);
-
-    } else {
-        mostrarError("Usuario o contraseña incorrectos");
-        limpiarCampos();
-    }
-}
-
-
-// Función principal de login
-function login(event) {
-    if (event) event.preventDefault();
-
-    const usuario = usuarioInput.value.trim();
+    const email = usuarioInput.value.trim();
     const password = passwordInput.value;
 
     // Limpiar mensaje de error previo
@@ -60,22 +51,54 @@ function login(event) {
     errorMsg.style.opacity = "0";
 
     // Validar campos vacíos
-    if (!usuario || !password) {
+    if (!email || !password) {
         mostrarError("Por favor, completa todos los campos");
         return false;
     }
 
-    // Validar credenciales
-    if (usuariosValidos[usuario] && usuariosValidos[usuario] === password) {
-        // Login exitoso - Mostrar loader
-        mostrarLoader();
+    // Mostrar loader
+    mostrarLoader();
 
-        // Redireccionar después de 2 segundos (para ver la animación completa)
+    try {
+        // Intentar login con Firebase
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Esperar 2 segundos para ver la animación completa
         setTimeout(() => {
             window.location.href = "inicio.html";
         }, 2000);
-    } else {
-        mostrarError("Usuario o contraseña incorrectos");
+
+    } catch (error) {
+        // Manejar errores de Firebase
+        ocultarLoader();
+
+        let mensajeError = "Error al iniciar sesión";
+
+        switch (error.code) {
+            case 'auth/user-not-found':
+                mensajeError = "Usuario no encontrado";
+                break;
+            case 'auth/wrong-password':
+                mensajeError = "Contraseña incorrecta";
+                break;
+            case 'auth/invalid-email':
+                mensajeError = "Email inválido";
+                break;
+            case 'auth/user-disabled':
+                mensajeError = "Usuario deshabilitado";
+                break;
+            case 'auth/too-many-requests':
+                mensajeError = "Demasiados intentos. Intenta más tarde";
+                break;
+            case 'auth/invalid-credential':
+                mensajeError = "Usuario o contraseña incorrectos";
+                break;
+            default:
+                mensajeError = "Error al iniciar sesión";
+        }
+
+        mostrarError(mensajeError);
         limpiarCampos();
     }
 
@@ -119,21 +142,23 @@ function limpiarCampos() {
 }
 
 // Event listeners
-submitBtn.addEventListener("click", function (e) {
+submitBtn.addEventListener("click", async function (e) {
     e.preventDefault();
-    login(e);
+    e.stopPropagation();
+    await login(e);
 });
 
-form.addEventListener("submit", function (e) {
+form.addEventListener("submit", async function (e) {
     e.preventDefault();
-    login(e);
+    e.stopPropagation();
+    await login(e);
 });
 
 // Permitir login con Enter
-passwordInput.addEventListener("keypress", function (e) {
+passwordInput.addEventListener("keypress", async function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
-        login(e);
+        await login(e);
     }
 });
 
@@ -156,4 +181,3 @@ passwordInput.addEventListener("input", function () {
         errorMsg.style.opacity = "0";
     }
 });
-

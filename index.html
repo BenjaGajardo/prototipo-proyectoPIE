@@ -5,19 +5,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login</title>
-
+  <link rel="stylesheet" href="static/css/login.css">
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Estilos propios -->
-  <link rel="stylesheet" href="static/css/style.css">
-  <link rel="stylesheet" href="static/css/login.css">
 </head>
 
-<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
-
-  <!-- Loader de pantalla completa con animación de cubo 3D -->
-  <div class="loader-overlay" id="loginLoader"> <!-- Pantalla de carga -->
+<body class="d-flex justify-content-center align-items-center vh-100">
+  <!-- Loader de pantalla completa -->
+  <div class="loader-overlay" id="loginLoader">
     <div class="loader">
       <div class="cube">
         <div class="face"></div>
@@ -31,22 +26,20 @@
     <div class="loader-text">Iniciando sesión...</div>
   </div>
 
-  <div class="login-box"> <!-- Contenedor principal del formulario login -->
+  <!-- Formulario de login -->
+  <div class="login-box">
     <p>Login</p>
-    <form id="loginForm"> <!-- Contiene los campos login -->
+    <form id="loginForm">
       <div class="user-box">
-        <!-- campo que escribe el usuario o email -->
-        <input required="" id="usuario" name="usuario" type="text" autocomplete="username">
+        <input required="" id="usuario" name="usuario" type="email" autocomplete="username">
         <label>Email</label>
       </div>
       <div class="user-box">
-        <!-- Campo para escribir la contraseña -->
         <input required="" id="password" name="password" type="password" autocomplete="current-password">
         <label>Password</label>
       </div>
-      <!-- Mensaje para mostrar error -->
       <p id="error" style="color: #ff6b6b; font-size: 14px; margin: 10px 0; min-height: 20px;"></p>
-      <a href="#" id="submitBtn"> <!-- Boton para enviar el login -->
+      <a href="javascript:void(0);" id="submitBtn">
         <span></span>
         <span></span>
         <span></span>
@@ -56,30 +49,8 @@
     </form>
   </div>
 
-
-  <!-- JAVASCRIPT -->
-  <script>
-    // Evitar volver al login con el botón atrás
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = function () {
-      window.history.pushState(null, "", window.location.href);
-    };
-
-    if (usuariosValidos[usuario] && usuariosValidos[usuario] === password){
-      mostrarLoader();
-
-      localStorage.setItem("sesion", JSON, stringify({
-        usuario: usuario,
-        timestamp: new Date().getTime()
-      }));
-
-      setTimeout(() => {
-        window.location.href = "inicio.html";
-      }, 2000);
-    }
-
-  </script>
-  <script src="static/js/login.js"></script>
+  <!-- Firebase SDK -->
+  <script type="module" src="static/js/login.js"></script>
 </body>
 
 </html>
