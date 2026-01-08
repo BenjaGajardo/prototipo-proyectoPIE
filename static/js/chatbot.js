@@ -1,5 +1,5 @@
 // Configuración
-const WEBHOOK_URL = 'https://aleoftsushima.app.n8n.cloud/webhook/753f87b7-7798-47e5-94d0-1b052abb235c/chat';
+const WEBHOOK_URL = 'https://maxitodiaz.app.n8n.cloud/webhook/753f87b7-7798-47e5-94d0-1b052abb235c/chat';
 
 // Generar ID de sesión único
 let sessionId = 'user_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
@@ -58,41 +58,26 @@ async function sendMessage() {
 
         const data = await response.json();
         
+        // DEBUG: Ver estructura completa de la respuesta
+        console.log('📦 Respuesta completa del servidor:', data);
+        console.log('📦 Tipo de respuesta:', typeof data);
+        
         // Ocultar indicador
         showTypingIndicator(false);
 
-        // Extraer respuesta - intentar múltiples estructuras
-        let botResponse = '';
-
-        // Intentar diferentes estructuras de respuesta
-        if (data.output && data.output !== null) {
-            botResponse = data.output;
-        } else if (data.content && data.content.parts) {
-            // Respuesta directa del modelo
-            botResponse = data.content.parts[0]?.text || data.content.parts.text;
-        } else if (data.text) {
-            botResponse = data.text;
-        } else if (data.message) {
-            botResponse = data.message;
-        } else if (data.response) {
-            botResponse = data.response;
-        } else if (typeof data === 'string') {
-            botResponse = data;
-        } else {
-            // Si ninguna estructura coincide, mostrar error amigable
-            console.error('Estructura de respuesta inesperada:', data);
-            botResponse = 'Recibí tu mensaje pero hubo un problema al procesar la respuesta. Por favor, contacta al administrador.';
-        }
+        // Extraer respuesta con mejor manejo
+        let botResponse = extractBotResponse(data);
 
         // Verificar que no sea null o vacío
-        if (!botResponse || botResponse === 'null') {
-            botResponse = '❌ No pude generar una respuesta. Por favor verifica la configuración del workflow en n8n.';
+        if (!botResponse || botResponse === 'null' || botResponse.trim() === '') {
+            console.error('❌ Respuesta vacía o null. Data completa:', data);
+            botResponse = '❌ No pude generar una respuesta. La estructura de datos recibida no contiene una respuesta válida.\n\nPor favor, verifica la configuración del nodo "Respond to Webhook" en n8n.';
         }
 
         addMessage(botResponse, 'bot');
 
     } catch (error) {
-        console.error('Error completo:', error);
+        console.error('❌ Error completo:', error);
         showTypingIndicator(false);
 
         let errorMessage = '❌ Lo siento, hubo un problema. ';
@@ -100,11 +85,11 @@ async function sendMessage() {
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
             errorMessage += 'No puedo conectarme al servidor. Por favor verifica tu conexión o contacta al administrador.';
         } else if (error.message.includes('404')) {
-            errorMessage += 'El servicio no está disponible. Por favor contacta al administrador.';
+            errorMessage += 'El servicio no está disponible (Error 404). Verifica la URL del webhook.';
         } else if (error.message.includes('500')) {
-            errorMessage += 'Error en el servidor. Por favor intenta nuevamente.';
+            errorMessage += 'Error en el servidor (Error 500). Revisa el workflow en n8n.';
         } else {
-            errorMessage += 'Por favor intenta de nuevo en unos momentos.';
+            errorMessage += `Error: ${error.message}`;
         }
 
         addMessage(errorMessage, 'bot');
@@ -112,6 +97,76 @@ async function sendMessage() {
         sendBtn.disabled = false;
         input.focus();
     }
+}
+
+// Función mejorada para extraer la respuesta del bot
+function extractBotResponse(data) {
+    console.log('🔍 Intentando extraer respuesta de:', data);
+    
+    // Si la respuesta es directamente un string
+    if (typeof data === 'string' && data.trim() !== '') {
+        console.log('✅ Respuesta tipo string directa');
+        return data;
+    }
+    
+    // Si no es un objeto, convertir a string
+    if (typeof data !== 'object' || data === null) {
+        console.log('⚠️ Respuesta no es objeto, convirtiendo a string');
+        return String(data);
+    }
+    
+    // Lista ordenada de posibles campos de respuesta
+    const possibleFields = [
+        'output',           // Formato típico de n8n AI Agent
+        'text',            // Formato texto simple
+        'message',         // Formato mensaje
+        'response',        // Formato respuesta
+        'data',            // Formato data wrapper
+        'result',          // Formato resultado
+        'answer',          // Formato answer
+        'reply',           // Formato reply
+    ];
+    
+    // Intentar campos directos
+    for (const field of possibleFields) {
+        if (data[field] && data[field] !== null && data[field] !== 'null') {
+            console.log(`✅ Respuesta encontrada en campo: ${field}`);
+            return String(data[field]);
+        }
+    }
+    
+    // Intentar estructura anidada content.parts
+    if (data.content?.parts) {
+        if (Array.isArray(data.content.parts) && data.content.parts.length > 0) {
+            const firstPart = data.content.parts[0];
+            if (firstPart?.text) {
+                console.log('✅ Respuesta encontrada en content.parts[0].text');
+                return String(firstPart.text);
+            }
+        }
+        if (data.content.parts.text) {
+            console.log('✅ Respuesta encontrada en content.parts.text');
+            return String(data.content.parts.text);
+        }
+    }
+    
+    // Si hay un array de items, intentar extraer el primer texto
+    if (Array.isArray(data) && data.length > 0) {
+        console.log('✅ Respuesta es un array, usando primer elemento');
+        return extractBotResponse(data[0]);
+    }
+    
+    // Último recurso: buscar cualquier campo que contenga texto largo
+    for (const [key, value] of Object.entries(data)) {
+        if (typeof value === 'string' && value.length > 10 && value !== 'null') {
+            console.log(`⚠️ Usando campo genérico: ${key}`);
+            return value;
+        }
+    }
+    
+    // Si todo falla, mostrar estructura JSON para debugging
+    console.error('❌ No se encontró respuesta válida en ningún campo conocido');
+    return `Debug - Estructura recibida:\n${JSON.stringify(data, null, 2)}`;
 }
 
 // Agregar mensaje al chat
@@ -130,8 +185,14 @@ function addMessage(text, type) {
 
     // Renderizar de forma segura
     if (type === 'bot') {
-        // Sanitizar HTML antes de renderizar (requiere DOMPurify)
-        contentDiv.innerHTML = DOMPurify.sanitize(text);
+        // Si tienes DOMPurify, úsalo. Si no, usar textContent
+        if (typeof DOMPurify !== 'undefined') {
+            contentDiv.innerHTML = DOMPurify.sanitize(text);
+        } else {
+            // Convertir saltos de línea a <br> de forma segura
+            const safeText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            contentDiv.innerHTML = safeText.replace(/\n/g, '<br>');
+        }
     } else {
         contentDiv.textContent = text;
     }
@@ -164,6 +225,7 @@ function showTypingIndicator(show) {
     });
 }
 
-// Mensaje inicial opcional
-console.log('Chat Widget InclusIA iniciado correctamente');
-console.log('Session ID:', sessionId);
+// Mensaje inicial
+console.log('✅ Chat Widget InclusIA iniciado correctamente');
+console.log('🔑 Session ID:', sessionId);
+console.log('🌐 Webhook URL:', WEBHOOK_URL);    
